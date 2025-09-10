@@ -2814,8 +2814,9 @@
                 updateDashboard();
             }
             
-            // Hide upload section
-            document.getElementById('uploadSection').style.display = 'none';
+            // Keep upload section visible even with demo data
+            // Users should still be able to upload their own files
+            console.log('Demo data loaded, keeping upload section available');
             
             showToast('Demo data loaded successfully!', 'success');
         }
@@ -3177,7 +3178,8 @@
             const fileInput = document.getElementById('fileInput');
             
             if (!uploadArea || !fileInput) {
-                console.error('Upload elements not found');
+                console.error('Upload elements not found', { uploadArea, fileInput });
+                showToast('File upload not available - elements missing', 'error');
                 return;
             }
 
@@ -3259,7 +3261,6 @@
                 
                 for (const file of files) {
                     try {
-                        console.log(`Processing file: ${file.name} (${file.type})`);
                         
                         if (file.type.startsWith('image/')) {
                             await processReceipt(file);
