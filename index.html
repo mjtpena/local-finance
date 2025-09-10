@@ -360,6 +360,96 @@
             transform: translateY(-2px);
         }
 
+        .document-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .document-item {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+
+        .document-item.active {
+            background: #eef2ff;
+            border-left-color: #3b82f6;
+        }
+
+        .document-name {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .document-stats {
+            font-size: 0.85em;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .document-btn {
+            padding: 5px 10px;
+            font-size: 0.8em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .document-btn.view {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .document-btn.view:hover {
+            background: #c7d2fe;
+        }
+
+        .document-btn.remove {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .document-btn.remove:hover {
+            background: #fecaca;
+        }
+
+        .processing-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .processing-progress {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .processing-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+            transition: width 0.3s;
+        }
+
         .loading {
             display: none;
             text-align: center;
@@ -468,8 +558,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                     </svg>
                 </div>
-                <h3 style="color: #374151; margin-bottom: 10px;">Drop your bank statement here</h3>
-                <p style="color: #6b7280; margin-bottom: 20px;">or click to browse</p>
+                <h3 style="color: #374151; margin-bottom: 10px;">Drop your bank statements here</h3>
+                <p style="color: #6b7280; margin-bottom: 20px;">Support multiple files - or click to browse</p>
                 <div class="format-badges">
                     <span class="format-badge pdf">PDF Statements</span>
                     <span class="format-badge csv">CSV Exports</span>
@@ -477,7 +567,7 @@
                 <p style="color: #9ca3af; font-size: 0.9em; margin-top: 15px;">
                     Supports: HSBC, Commonwealth Bank, ANZ, Westpac, NAB, and most major banks
                 </p>
-                <input type="file" id="fileInput" accept=".pdf,.csv">
+                <input type="file" id="fileInput" accept=".pdf,.csv" multiple>
             </div>
             <button class="sample-data-btn" onclick="loadSampleData()">Load Sample Data to Try It Out</button>
             <div id="extractionPreview" class="extraction-preview" style="display: none;">
@@ -492,6 +582,21 @@
         </div>
 
         <div class="dashboard" id="dashboard">
+            <!-- Document Management -->
+            <div class="card full-width" id="documentManager" style="display: none;">
+                <h2>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Uploaded Documents (<span id="documentCount">0</span>)
+                </h2>
+                <div id="documentList" class="document-list"></div>
+                <div class="export-buttons">
+                    <button class="export-btn" onclick="clearAllDocuments()">Clear All</button>
+                    <button class="export-btn" onclick="addMoreDocuments()">Add More Files</button>
+                </div>
+            </div>
+            
             <!-- Account Information -->
             <div class="card full-width" id="accountInfoCard" style="display: none;">
                 <h2>
@@ -617,6 +722,7 @@
                                 <th>Category</th>
                                 <th>Amount</th>
                                 <th>Balance</th>
+                                <th>Source</th>
                             </tr>
                         </thead>
                         <tbody id="transactionsBody"></tbody>
@@ -625,6 +731,7 @@
                 <div class="export-buttons">
                     <button class="export-btn" onclick="exportToCSV()">Export to CSV</button>
                     <button class="export-btn" onclick="generateReport()">Generate Report</button>
+                    <button class="export-btn" onclick="showAllDocuments()">Show All Documents</button>
                 </div>
             </div>
         </div>
@@ -640,6 +747,8 @@
         let monthlyData = {};
         let budgets = {};
         let accountDetails = {};
+        let uploadedDocuments = [];
+        let currentDocumentIndex = 0;
 
         // Enhanced category detection patterns
         const categoryPatterns = {
@@ -696,30 +805,92 @@
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file) {
-                processFile(file);
+            const files = Array.from(e.dataTransfer.files);
+            if (files.length > 0) {
+                processMultipleFiles(files);
             }
         });
 
         fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                processFile(file);
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                processMultipleFiles(files);
             }
         });
 
-        async function processFile(file) {
+        async function processMultipleFiles(files) {
             document.getElementById('loading').classList.add('active');
             
-            if (file.name.endsWith('.pdf')) {
-                await processPDF(file);
-            } else if (file.name.endsWith('.csv')) {
-                processCSV(file);
+            // Clear existing data if this is the first upload
+            if (uploadedDocuments.length === 0) {
+                transactions = [];
+                categories = {};
+                monthlyData = {};
+                budgets = {};
+                accountDetails = {};
             }
+            
+            let processedCount = 0;
+            const totalFiles = files.length;
+            
+            // Show processing status
+            showProcessingStatus(totalFiles);
+            
+            for (const file of files) {
+                try {
+                    const documentData = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.name.endsWith('.pdf') ? 'PDF' : 'CSV',
+                        uploadDate: new Date(),
+                        transactions: [],
+                        accountDetails: {},
+                        processed: false
+                    };
+                    
+                    if (file.name.endsWith('.pdf')) {
+                        await processPDFForDocument(file, documentData);
+                    } else if (file.name.endsWith('.csv')) {
+                        await processCSVForDocument(file, documentData);
+                    }
+                    
+                    uploadedDocuments.push(documentData);
+                    processedCount++;
+                    updateProcessingProgress(processedCount, totalFiles);
+                    
+                } catch (error) {
+                    console.error(`Error processing ${file.name}:`, error);
+                    alert(`Error processing ${file.name}. Skipping this file.`);
+                }
+            }
+            
+            // Combine all document data
+            combineDocumentData();
+            
+            // Hide loading and show dashboard
+            setTimeout(() => {
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('uploadSection').style.display = 'none';
+                document.getElementById('dashboard').classList.add('active');
+                document.getElementById('documentManager').style.display = 'block';
+                
+                // Start with combined view if multiple documents, otherwise show the single document
+                if (uploadedDocuments.length > 1) {
+                    currentDocumentIndex = -1;
+                    combineDocumentData();
+                } else {
+                    currentDocumentIndex = 0;
+                }
+                updateDocumentManager();
+            }, 1000);
+        }
+        
+        async function processFile(file) {
+            // Legacy function for backward compatibility
+            await processMultipleFiles([file]);
         }
 
-        async function processPDF(file) {
+        async function processPDFForDocument(file, documentData) {
             try {
                 const arrayBuffer = await file.arrayBuffer();
                 const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
@@ -739,15 +910,8 @@
                 preview.style.display = 'block';
                 content.textContent = fullText.substring(0, 1000) + '...';
                 
-                // Parse the extracted text
-                parsePDFText(fullText);
-                
-                // Hide loading and show dashboard
-                setTimeout(() => {
-                    document.getElementById('loading').classList.remove('active');
-                    document.getElementById('uploadSection').style.display = 'none';
-                    document.getElementById('dashboard').classList.add('active');
-                }, 1500);
+                // Parse the extracted text for this document
+                parsePDFTextForDocument(fullText, documentData);
                 
             } catch (error) {
                 console.error('Error processing PDF:', error);
@@ -756,11 +920,114 @@
             }
         }
 
+        function parsePDFTextForDocument(text, documentData) {
+            const docTransactions = [];
+            const docAccountDetails = {};
+            
+            // Extract account details (for HSBC format)
+            const accountMatch = text.match(/Account Number.*?(\d{4}\s+\d{4}\s+\d{4}\s+\d{4})/);
+            const creditLimitMatch = text.match(/Credit Limit\s+\$?([\d,]+\.?\d*)/);
+            const closingBalanceMatch = text.match(/Closing Balance\s+\$?([\d,]+\.?\d*)/);
+            const openingBalanceMatch = text.match(/Opening Balance\s+\$?([\d,]+\.?\d*)/);
+            
+            if (accountMatch) {
+                docAccountDetails.accountNumber = accountMatch[1].replace(/\s+/g, ' ');
+            }
+            if (creditLimitMatch) {
+                docAccountDetails.creditLimit = parseFloat(creditLimitMatch[1].replace(/,/g, ''));
+            }
+            if (closingBalanceMatch) {
+                docAccountDetails.closingBalance = parseFloat(closingBalanceMatch[1].replace(/,/g, ''));
+            }
+            if (openingBalanceMatch) {
+                docAccountDetails.openingBalance = parseFloat(openingBalanceMatch[1].replace(/,/g, ''));
+            }
+            
+            // Parse transactions - looking for date patterns and amounts
+            const lines = text.split('\n');
+            const transactionPattern = /(\d{1,2}\/\d{2}\/\d{2,4})\s+(\d{4})?\s*(.*?)\s+(-?\$?[\d,]+\.?\d*)/;
+            const altPattern = /(\d{1,2}\/\d{2}\/\d{2})\s+(.*?)\s+\$?([\d,]+\.\d{2})/;
+            
+            lines.forEach((line, index) => {
+                if (line.length < 10) return;
+                
+                let match = line.match(transactionPattern);
+                if (!match) {
+                    match = line.match(altPattern);
+                }
+                
+                if (match) {
+                    const dateStr = match[1];
+                    let description = '';
+                    let amountStr = '';
+                    
+                    if (match.length === 5) {
+                        description = match[3].trim();
+                        amountStr = match[4];
+                    } else {
+                        description = match[2].trim();
+                        amountStr = match[3];
+                    }
+                    
+                    const amount = parseFloat(amountStr.replace(/[$,]/g, ''));
+                    
+                    if (!isNaN(amount) && description.length > 0) {
+                        const dateParts = dateStr.split('/');
+                        let date;
+                        if (dateParts[2].length === 2) {
+                            date = new Date(`20${dateParts[2]}`, parseInt(dateParts[1]) - 1, dateParts[0]);
+                        } else {
+                            date = new Date(dateParts[2], parseInt(dateParts[1]) - 1, dateParts[0]);
+                        }
+                        
+                        const category = detectCategory(description);
+                        const isRefund = description.toLowerCase().includes('refund') || 
+                                       description.toLowerCase().includes('credit') ||
+                                       amountStr.includes('-');
+                        const type = (category === 'Income' || isRefund) ? 'income' : 'expense';
+                        
+                        const transaction = {
+                            date,
+                            description: description.substring(0, 50),
+                            amount: isRefund ? Math.abs(amount) : -Math.abs(amount),
+                            balance: 0,
+                            category,
+                            type,
+                            month: date.toISOString().substring(0, 7),
+                            sourceDocument: documentData.name
+                        };
+                        
+                        docTransactions.push(transaction);
+                    }
+                }
+            });
+            
+            // Sort transactions by date
+            docTransactions.sort((a, b) => b.date - a.date);
+            
+            // Calculate running balance
+            if (docAccountDetails.closingBalance) {
+                let runningBalance = docAccountDetails.closingBalance;
+                for (let i = 0; i < docTransactions.length; i++) {
+                    docTransactions[i].balance = runningBalance;
+                    runningBalance -= docTransactions[i].amount;
+                }
+            }
+            
+            documentData.transactions = docTransactions;
+            documentData.accountDetails = docAccountDetails;
+            documentData.processed = true;
+        }
+        
         function parsePDFText(text) {
-            transactions = [];
+            // This function is kept for backward compatibility
+            const tempDocData = { transactions: [], accountDetails: {} };
+            parsePDFTextForDocument(text, tempDocData);
+            
+            transactions = tempDocData.transactions;
+            accountDetails = tempDocData.accountDetails;
             categories = {};
             monthlyData = {};
-            accountDetails = {};
             
             // Extract account details (for HSBC format)
             const accountMatch = text.match(/Account Number.*?(\d{4}\s+\d{4}\s+\d{4}\s+\d{4})/);
@@ -907,18 +1174,33 @@
             updateFilters();
         }
 
-        function processCSV(file) {
-            Papa.parse(file, {
-                header: true,
-                complete: function(results) {
-                    setTimeout(() => {
-                        processTransactions(results.data);
-                        document.getElementById('loading').classList.remove('active');
-                        document.getElementById('uploadSection').style.display = 'none';
-                        document.getElementById('dashboard').classList.add('active');
-                    }, 1500);
-                }
+        async function processCSVForDocument(file, documentData) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(file, {
+                    header: true,
+                    complete: function(results) {
+                        try {
+                            processTransactionsForDocument(results.data, documentData);
+                            resolve();
+                        } catch (error) {
+                            reject(error);
+                        }
+                    },
+                    error: function(error) {
+                        reject(error);
+                    }
+                });
             });
+        }
+        
+        function processCSV(file) {
+            // Legacy function for backward compatibility
+            processCSVForDocument(file, { transactions: [], accountDetails: {} })
+                .then(() => {
+                    document.getElementById('loading').classList.remove('active');
+                    document.getElementById('uploadSection').style.display = 'none';
+                    document.getElementById('dashboard').classList.add('active');
+                });
         }
 
         function detectCategory(description) {
@@ -931,8 +1213,50 @@
             return 'Other';
         }
 
+        function processTransactionsForDocument(data, documentData) {
+            const docTransactions = [];
+            
+            // Process each transaction
+            data.forEach(row => {
+                if (!row.Date && !row.date) return;
+                
+                const date = new Date(row.Date || row.date);
+                const description = row.Description || row.description || row.Payee || '';
+                const amount = parseFloat(row.Amount || row.amount || row.Debit || row.Credit || 0);
+                const balance = parseFloat(row.Balance || row.balance || 0);
+                
+                if (isNaN(amount)) return;
+
+                const category = detectCategory(description);
+                const type = amount > 0 ? 'income' : 'expense';
+                
+                const transaction = {
+                    date,
+                    description,
+                    amount,
+                    balance,
+                    category,
+                    type,
+                    month: date.toISOString().substring(0, 7),
+                    sourceDocument: documentData.name
+                };
+                
+                docTransactions.push(transaction);
+            });
+
+            // Sort transactions by date
+            docTransactions.sort((a, b) => b.date - a.date);
+            
+            documentData.transactions = docTransactions;
+            documentData.processed = true;
+        }
+        
         function processTransactions(data) {
-            transactions = [];
+            // This function is kept for backward compatibility
+            const tempDocData = { transactions: [] };
+            processTransactionsForDocument(data, tempDocData);
+            
+            transactions = tempDocData.transactions;
             categories = {};
             monthlyData = {};
 
@@ -1363,6 +1687,7 @@
                     <td><span class="category-badge" style="background: ${categoryColors[t.category]}20; color: ${categoryColors[t.category]}">${t.category}</span></td>
                     <td class="${t.type === 'income' ? 'amount-positive' : 'amount-negative'}">${formatCurrency(Math.abs(t.amount))}</td>
                     <td>${t.balance ? formatCurrency(t.balance) : '-'}</td>
+                    <td style="font-size: 0.8em; color: #6b7280;">${t.sourceDocument || 'Unknown'}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -1423,6 +1748,7 @@
                     <td><span class="category-badge" style="background: ${categoryColors[t.category]}20; color: ${categoryColors[t.category]}">${t.category}</span></td>
                     <td class="${t.type === 'income' ? 'amount-positive' : 'amount-negative'}">${formatCurrency(Math.abs(t.amount))}</td>
                     <td>${t.balance ? formatCurrency(t.balance) : '-'}</td>
+                    <td style="font-size: 0.8em; color: #6b7280;">${t.sourceDocument || 'Unknown'}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -1435,16 +1761,270 @@
             }).format(Math.abs(amount));
         }
 
+        function showProcessingStatus(totalFiles) {
+            const dashboard = document.getElementById('dashboard');
+            const existingStatus = document.getElementById('processingStatus');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            
+            const statusDiv = document.createElement('div');
+            statusDiv.id = 'processingStatus';
+            statusDiv.className = 'processing-status';
+            statusDiv.innerHTML = `
+                <div>
+                    <strong>Processing ${totalFiles} file(s)...</strong>
+                    <div id="processingText">Starting...</div>
+                </div>
+                <div class="processing-progress">
+                    <div class="processing-progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+            `;
+            
+            dashboard.insertBefore(statusDiv, dashboard.firstChild);
+        }
+        
+        function updateProcessingProgress(processed, total) {
+            const progressBar = document.getElementById('progressBar');
+            const processingText = document.getElementById('processingText');
+            
+            if (progressBar && processingText) {
+                const percentage = (processed / total) * 100;
+                progressBar.style.width = `${percentage}%`;
+                processingText.textContent = `Processed ${processed} of ${total} files`;
+                
+                if (processed === total) {
+                    processingText.textContent = 'Combining data from all documents...';
+                    setTimeout(() => {
+                        const statusDiv = document.getElementById('processingStatus');
+                        if (statusDiv) {
+                            statusDiv.remove();
+                        }
+                    }, 1000);
+                }
+            }
+        }
+        
+        function combineDocumentData() {
+            transactions = [];
+            categories = {};
+            monthlyData = {};
+            accountDetails = {};
+            
+            // Combine all transactions from all documents
+            uploadedDocuments.forEach(doc => {
+                if (doc.processed && doc.transactions) {
+                    transactions.push(...doc.transactions);
+                }
+                
+                // Merge account details (prefer the most complete one)
+                if (doc.accountDetails && Object.keys(doc.accountDetails).length > Object.keys(accountDetails).length) {
+                    accountDetails = { ...accountDetails, ...doc.accountDetails };
+                }
+            });
+            
+            // Sort all transactions by date
+            transactions.sort((a, b) => b.date - a.date);
+            
+            // Recalculate categories and monthly data
+            transactions.forEach(t => {
+                // Aggregate by category
+                if (!categories[t.category]) {
+                    categories[t.category] = 0;
+                }
+                if (t.type === 'expense') {
+                    categories[t.category] += Math.abs(t.amount);
+                }
+                
+                // Aggregate by month
+                if (!monthlyData[t.month]) {
+                    monthlyData[t.month] = {
+                        income: 0,
+                        expenses: 0,
+                        transactions: []
+                    };
+                }
+                
+                if (t.type === 'income') {
+                    monthlyData[t.month].income += Math.abs(t.amount);
+                } else {
+                    monthlyData[t.month].expenses += Math.abs(t.amount);
+                }
+                monthlyData[t.month].transactions.push(t);
+            });
+            
+            // Generate budgets and update UI
+            generateBudgets();
+            updateStats();
+            updateCharts();
+            updateTransactionsTable();
+            updateBudgetView();
+            generateInsights();
+            updateFilters();
+            
+            if (Object.keys(accountDetails).length > 0) {
+                updateAccountInfo();
+            }
+        }
+        
+        function updateDocumentManager() {
+            const documentList = document.getElementById('documentList');
+            const documentCount = document.getElementById('documentCount');
+            
+            documentCount.textContent = uploadedDocuments.length;
+            documentList.innerHTML = '';
+            
+            // Add "All Documents" option if we have multiple documents
+            if (uploadedDocuments.length > 1) {
+                const allDocsItem = document.createElement('div');
+                allDocsItem.className = `document-item ${currentDocumentIndex === -1 ? 'active' : ''}`;
+                allDocsItem.innerHTML = `
+                    <div class="document-name" onclick="showAllDocuments()">📊 All Documents Combined</div>
+                    <div class="document-stats">
+                        Combined view • ${transactions.length} total transactions
+                    </div>
+                    <div class="document-actions">
+                        <button class="document-btn view" onclick="showAllDocuments()">View Combined</button>
+                    </div>
+                `;
+                documentList.appendChild(allDocsItem);
+            }
+            
+            uploadedDocuments.forEach((doc, index) => {
+                const docItem = document.createElement('div');
+                docItem.className = `document-item ${index === currentDocumentIndex ? 'active' : ''}`;
+                docItem.innerHTML = `
+                    <div class="document-name" onclick="viewDocument(${index})">${doc.name}</div>
+                    <div class="document-stats">
+                        ${doc.type} • ${(doc.size / 1024).toFixed(1)} KB • ${doc.transactions?.length || 0} transactions
+                    </div>
+                    <div class="document-actions">
+                        <button class="document-btn view" onclick="viewDocument(${index})">View</button>
+                        <button class="document-btn remove" onclick="removeDocument(${index})">Remove</button>
+                    </div>
+                `;
+                documentList.appendChild(docItem);
+            });
+        }
+        
+        function viewDocument(index) {
+            currentDocumentIndex = index;
+            const doc = uploadedDocuments[index];
+            
+            // Update UI to show only this document's data
+            transactions = [...doc.transactions];
+            accountDetails = { ...doc.accountDetails };
+            
+            // Recalculate stats for this document only
+            categories = {};
+            monthlyData = {};
+            
+            transactions.forEach(t => {
+                if (!categories[t.category]) {
+                    categories[t.category] = 0;
+                }
+                if (t.type === 'expense') {
+                    categories[t.category] += Math.abs(t.amount);
+                }
+                
+                if (!monthlyData[t.month]) {
+                    monthlyData[t.month] = {
+                        income: 0,
+                        expenses: 0,
+                        transactions: []
+                    };
+                }
+                
+                if (t.type === 'income') {
+                    monthlyData[t.month].income += Math.abs(t.amount);
+                } else {
+                    monthlyData[t.month].expenses += Math.abs(t.amount);
+                }
+                monthlyData[t.month].transactions.push(t);
+            });
+            
+            generateBudgets();
+            updateStats();
+            updateCharts();
+            updateTransactionsTable();
+            updateBudgetView();
+            generateInsights();
+            updateFilters();
+            updateAccountInfo();
+            updateDocumentManager();
+        }
+        
+        function removeDocument(index) {
+            if (confirm(`Are you sure you want to remove "${uploadedDocuments[index].name}"?`)) {
+                uploadedDocuments.splice(index, 1);
+                
+                if (uploadedDocuments.length === 0) {
+                    // Reset everything
+                    transactions = [];
+                    categories = {};
+                    monthlyData = {};
+                    budgets = {};
+                    accountDetails = {};
+                    document.getElementById('uploadSection').style.display = 'block';
+                    document.getElementById('dashboard').classList.remove('active');
+                } else {
+                    // Recombine remaining documents
+                    combineDocumentData();
+                    updateDocumentManager();
+                }
+            }
+        }
+        
+        function clearAllDocuments() {
+            if (confirm('Are you sure you want to remove all documents and start over?')) {
+                uploadedDocuments = [];
+                transactions = [];
+                categories = {};
+                monthlyData = {};
+                budgets = {};
+                accountDetails = {};
+                currentDocumentIndex = 0;
+                
+                document.getElementById('uploadSection').style.display = 'block';
+                document.getElementById('dashboard').classList.remove('active');
+                document.getElementById('documentManager').style.display = 'none';
+            }
+        }
+        
+        function addMoreDocuments() {
+            document.getElementById('fileInput').click();
+        }
+        
+        function showAllDocuments() {
+            currentDocumentIndex = -1; // -1 indicates "all documents" view
+            combineDocumentData();
+            updateDocumentManager();
+        }
+        
         function loadSampleData() {
             const sampleData = generateSampleData();
-            document.getElementById('loading').classList.add('active');
             
-            setTimeout(() => {
-                processTransactions(sampleData);
-                document.getElementById('loading').classList.remove('active');
-                document.getElementById('uploadSection').style.display = 'none';
-                document.getElementById('dashboard').classList.add('active');
-            }, 1500);
+            // Create a mock document for sample data
+            const sampleDoc = {
+                name: 'Sample_Bank_Statement.csv',
+                size: 50000,
+                type: 'CSV',
+                uploadDate: new Date(),
+                transactions: [],
+                accountDetails: {},
+                processed: false
+            };
+            
+            processTransactionsForDocument(sampleData, sampleDoc);
+            
+            uploadedDocuments = [sampleDoc];
+            currentDocumentIndex = -1; // Start with "all documents" view
+            combineDocumentData();
+            
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('documentManager').style.display = 'block';
+            updateDocumentManager();
         }
 
         function generateSampleData() {
