@@ -1556,7 +1556,7 @@
 
         // Predict category using TensorFlow model
         async function predictCategory(description) {
-            if (!tfModel) return 'Other';
+            if (!tfModel) return predictCategorySync(description);
             
             try {
                 // Convert description to tensor
@@ -1577,8 +1577,71 @@
                 return categories[maxIndex];
             } catch (error) {
                 console.error('Prediction error:', error);
-                return 'Other';
+                return predictCategorySync(description);
             }
+        }
+
+        // Synchronous category prediction using pattern matching
+        function predictCategorySync(description) {
+            if (!description) return 'Other';
+            
+            const desc = description.toLowerCase();
+            
+            // Groceries patterns
+            if (desc.includes('grocery') || desc.includes('supermarket') || desc.includes('walmart') || 
+                desc.includes('target') || desc.includes('costco') || desc.includes('safeway') || 
+                desc.includes('kroger') || desc.includes('whole foods') || desc.includes('trader joe')) {
+                return 'Groceries';
+            }
+            
+            // Dining patterns
+            if (desc.includes('restaurant') || desc.includes('cafe') || desc.includes('coffee') || 
+                desc.includes('pizza') || desc.includes('burger') || desc.includes('mcdonalds') || 
+                desc.includes('starbucks') || desc.includes('subway') || desc.includes('chipotle') || 
+                desc.includes('taco bell') || desc.includes('kfc') || desc.includes('dining')) {
+                return 'Dining';
+            }
+            
+            // Transportation patterns
+            if (desc.includes('gas') || desc.includes('fuel') || desc.includes('uber') || 
+                desc.includes('lyft') || desc.includes('taxi') || desc.includes('shell') || 
+                desc.includes('exxon') || desc.includes('chevron') || desc.includes('bp') || 
+                desc.includes('parking') || desc.includes('metro') || desc.includes('transit')) {
+                return 'Transportation';
+            }
+            
+            // Shopping patterns
+            if (desc.includes('amazon') || desc.includes('shop') || desc.includes('store') || 
+                desc.includes('mall') || desc.includes('retail') || desc.includes('ebay') || 
+                desc.includes('purchase') || desc.includes('buy') || desc.includes('marketplace')) {
+                return 'Shopping';
+            }
+            
+            // Entertainment patterns
+            if (desc.includes('movie') || desc.includes('netflix') || desc.includes('spotify') || 
+                desc.includes('game') || desc.includes('theater') || desc.includes('concert') || 
+                desc.includes('ticket') || desc.includes('entertainment') || desc.includes('hulu') || 
+                desc.includes('disney') || desc.includes('amazon prime')) {
+                return 'Entertainment';
+            }
+            
+            // Utilities patterns
+            if (desc.includes('electric') || desc.includes('water') || desc.includes('internet') || 
+                desc.includes('phone') || desc.includes('utility') || desc.includes('bill') || 
+                desc.includes('service') || desc.includes('verizon') || desc.includes('att') || 
+                desc.includes('comcast') || desc.includes('spectrum')) {
+                return 'Utilities';
+            }
+            
+            // Healthcare patterns
+            if (desc.includes('doctor') || desc.includes('hospital') || desc.includes('pharmacy') || 
+                desc.includes('medical') || desc.includes('health') || desc.includes('cvs') || 
+                desc.includes('walgreens') || desc.includes('clinic') || desc.includes('dental')) {
+                return 'Healthcare';
+            }
+            
+            // Default to Other
+            return 'Other';
         }
 
         function descriptionToVector(description) {
@@ -3108,57 +3171,116 @@
             return colors[category] || '#9ca3af';
         }
 
-        // File handling
-        document.getElementById('uploadArea').addEventListener('click', () => {
-            document.getElementById('fileInput').click();
-        });
-
-        document.getElementById('fileInput').addEventListener('change', async (e) => {
-            const files = Array.from(e.target.files);
+        // File handling - will be initialized after DOM loads
+        function initFileHandling() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
             
-            for (const file of files) {
-                if (file.type.startsWith('image/')) {
-                    await processReceipt(file);
-                } else if (file.name.endsWith('.pdf')) {
-                    await processPDF(file);
-                } else if (file.name.endsWith('.csv')) {
-                    await processCSV(file);
-                } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
-                    showToast('Excel files not yet supported. Please export as CSV.', 'info');
-                } else {
-                    showToast(`Unsupported file type: ${file.name}`, 'error');
-                }
+            if (!uploadArea || !fileInput) {
+                console.error('Upload elements not found');
+                return;
             }
-            
-            // Clear the input
-            e.target.value = '';
-        });
 
-        document.getElementById('uploadArea').addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.currentTarget.classList.add('dragover');
-        });
+            // Click to upload
+            uploadArea.addEventListener('click', () => {
+                fileInput.click();
+            });
 
-        document.getElementById('uploadArea').addEventListener('dragleave', (e) => {
-            e.currentTarget.classList.remove('dragover');
-        });
-
-        document.getElementById('uploadArea').addEventListener('drop', async (e) => {
-            e.preventDefault();
-            e.currentTarget.classList.remove('dragover');
-            
-            const files = Array.from(e.dataTransfer.files);
-            
-            for (const file of files) {
-                if (file.type.startsWith('image/')) {
-                    await processReceipt(file);
-                } else if (file.name.endsWith('.pdf')) {
-                    await processPDF(file);
-                } else if (file.name.endsWith('.csv')) {
-                    await processCSV(file);
+            // File input change
+            fileInput.addEventListener('change', async (e) => {
+                const files = Array.from(e.target.files);
+                
+                if (files.length === 0) return;
+                
+                showToast(`Processing ${files.length} file(s)...`, 'info');
+                
+                for (const file of files) {
+                    try {
+                        if (file.type.startsWith('image/')) {
+                            await processReceipt(file);
+                        } else if (file.name.toLowerCase().endsWith('.pdf')) {
+                            await processPDF(file);
+                        } else if (file.name.toLowerCase().endsWith('.csv')) {
+                            await processCSV(file);
+                        } else if (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')) {
+                            showToast('Excel files not yet supported. Please export as CSV.', 'info');
+                        } else {
+                            showToast(`Unsupported file type: ${file.name}`, 'error');
+                        }
+                    } catch (error) {
+                        console.error(`Error processing file ${file.name}:`, error);
+                        showToast(`Error processing ${file.name}: ${error.message}`, 'error');
+                    }
                 }
-            }
-        });
+                
+                // Clear the input
+                e.target.value = '';
+            });
+
+            // Drag over
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.currentTarget.classList.add('dragover');
+                e.dataTransfer.dropEffect = 'copy';
+            });
+
+            // Drag enter
+            uploadArea.addEventListener('dragenter', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.currentTarget.classList.add('dragover');
+            });
+
+            // Drag leave
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // Only remove dragover if we're actually leaving the upload area
+                if (!uploadArea.contains(e.relatedTarget)) {
+                    e.currentTarget.classList.remove('dragover');
+                }
+            });
+
+            // Drop
+            uploadArea.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.currentTarget.classList.remove('dragover');
+                
+                const files = Array.from(e.dataTransfer.files);
+                
+                if (files.length === 0) {
+                    showToast('No files were dropped', 'error');
+                    return;
+                }
+                
+                showToast(`Processing ${files.length} dropped file(s)...`, 'info');
+                
+                for (const file of files) {
+                    try {
+                        console.log(`Processing file: ${file.name} (${file.type})`);
+                        
+                        if (file.type.startsWith('image/')) {
+                            await processReceipt(file);
+                        } else if (file.name.toLowerCase().endsWith('.pdf')) {
+                            await processPDF(file);
+                        } else if (file.name.toLowerCase().endsWith('.csv')) {
+                            await processCSV(file);
+                        } else if (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')) {
+                            showToast('Excel files not yet supported. Please export as CSV.', 'info');
+                        } else {
+                            showToast(`Unsupported file type: ${file.name}`, 'error');
+                        }
+                    } catch (error) {
+                        console.error(`Error processing dropped file ${file.name}:`, error);
+                        showToast(`Error processing ${file.name}: ${error.message}`, 'error');
+                    }
+                }
+            });
+            
+            console.log('File handling initialized successfully');
+        }
 
         async function processPDF(file) {
             showLoading('Processing PDF...');
@@ -3189,33 +3311,97 @@
         }
 
         async function processCSV(file) {
-            return new Promise((resolve) => {
+            showLoading('Processing CSV file...');
+            
+            return new Promise((resolve, reject) => {
                 Papa.parse(file, {
                     header: true,
+                    skipEmptyLines: true,
+                    error: (error) => {
+                        hideLoading();
+                        reject(new Error(`CSV parsing failed: ${error.message}`));
+                    },
                     complete: (results) => {
-                        results.data.forEach(row => {
-                            if (row.Date || row.date) {
-                                const transaction = {
-                                    id: Date.now() + Math.random(),
-                                    date: new Date(row.Date || row.date),
-                                    description: row.Description || row.description || '',
-                                    merchant: row.Merchant || row.merchant || '',
-                                    amount: parseFloat(row.Amount || row.amount || 0),
-                                    category: predictCategory(row.Description || ''),
-                                    type: parseFloat(row.Amount || row.amount || 0) > 0 ? 'income' : 'expense',
-                                    source: file.name,
-                                    confidence: 0.9
-                                };
-                                
-                                if (!isNaN(transaction.amount)) {
+                        try {
+                            if (results.errors && results.errors.length > 0) {
+                                console.warn('CSV parsing warnings:', results.errors);
+                            }
+                            
+                            let processedCount = 0;
+                            const errors = [];
+                            
+                            // Process rows synchronously to avoid async issues
+                            for (let index = 0; index < results.data.length; index++) {
+                                const row = results.data[index];
+                                try {
+                                    // Look for date field (multiple possible column names)
+                                    const dateValue = row.Date || row.date || row.DATE || row['Transaction Date'] || row['Date Posted'];
+                                    if (!dateValue) {
+                                        continue; // Skip rows without dates
+                                    }
+                                    
+                                    // Look for amount field
+                                    const amountValue = row.Amount || row.amount || row.AMOUNT || row.Debit || row.Credit || row['Transaction Amount'];
+                                    const amount = parseFloat(String(amountValue || '0').replace(/[,$]/g, ''));
+                                    
+                                    if (isNaN(amount)) {
+                                        errors.push(`Row ${index + 1}: Invalid amount value`);
+                                        continue;
+                                    }
+                                    
+                                    // Parse date
+                                    const transactionDate = new Date(dateValue);
+                                    if (isNaN(transactionDate.getTime())) {
+                                        errors.push(`Row ${index + 1}: Invalid date format`);
+                                        continue;
+                                    }
+                                    
+                                    // Look for description/merchant
+                                    const description = row.Description || row.description || row.DESCRIPTION || 
+                                                      row.Merchant || row.merchant || row.MERCHANT || 
+                                                      row['Transaction Description'] || row.Payee || 'Unknown Transaction';
+                                    
+                                    const transaction = {
+                                        id: Date.now() + Math.random() + index,
+                                        date: transactionDate,
+                                        description: description.toString().trim(),
+                                        merchant: row.Merchant || row.merchant || description.toString().split(' ')[0] || 'Unknown',
+                                        amount: amount,
+                                        category: predictCategorySync(description.toString()), // Use synchronous version
+                                        type: amount > 0 ? 'income' : 'expense',
+                                        source: file.name,
+                                        confidence: 0.9
+                                    };
+                                    
                                     transactions.push(transaction);
+                                    processedCount++;
+                                    
+                                } catch (error) {
+                                    errors.push(`Row ${index + 1}: ${error.message}`);
                                 }
                             }
-                        });
-                        
-                        showToast('CSV processed successfully', 'success');
-                        updateDashboard();
-                        resolve();
+                            
+                            hideLoading();
+                            
+                            if (processedCount === 0) {
+                                reject(new Error('No valid transactions found in CSV file. Please check the format.'));
+                                return;
+                            }
+                            
+                            let message = `CSV processed: ${processedCount} transactions imported`;
+                            if (errors.length > 0) {
+                                message += ` (${errors.length} errors)`;
+                                console.warn('CSV processing errors:', errors);
+                            }
+                            
+                            showToast(message, 'success');
+                            updateDashboard();
+                            resolve(processedCount);
+                            
+                        } catch (error) {
+                            hideLoading();
+                            reject(new Error(`CSV processing failed: ${error.message}`));
+                        }
                     }
                 });
             });
@@ -3255,6 +3441,9 @@
                 document.body.classList.add('dark-mode');
                 document.getElementById('darkMode').classList.add('active');
             }
+            
+            // Initialize file handling
+            initFileHandling();
             
             // Initialize the application
             initApp();
