@@ -3184,9 +3184,16 @@
             }
 
             // Click to upload
-            uploadArea.addEventListener('click', () => {
+            uploadArea.addEventListener('click', (e) => {
+                console.log('Upload area clicked!', e);
+                showToast('Upload area clicked - opening file dialog', 'info');
                 fileInput.click();
             });
+            
+            // Add visual debug styling to make upload area obvious
+            uploadArea.style.border = '3px solid red';
+            uploadArea.style.cursor = 'pointer';
+            uploadArea.title = 'Click here to upload files';
 
             // File input change
             fileInput.addEventListener('change', async (e) => {
@@ -3280,7 +3287,15 @@
                 }
             });
             
+            // Ensure loading overlay is hidden
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('hidden');
+                loadingOverlay.style.display = 'none';
+            }
+            
             console.log('File handling initialized successfully');
+            showToast('File upload initialized - try clicking the upload area!', 'success');
         }
 
         async function processPDF(file) {
