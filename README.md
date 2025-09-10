@@ -48,7 +48,7 @@ A powerful, AI-powered finance dashboard that runs entirely in your browser with
 
 ## 🚀 Getting Started
 
-1. **Visit the App**: Open [your-github-pages-url] in your browser
+1. **Visit the App**: Open [https://michaeljohnpena.com/local-finance/](https://michaeljohnpena.com/local-finance/) in your browser
 2. **Install (Optional)**: Click "Install" when prompted to add as PWA
 3. **Try the Demo**: Click "Interactive Demo" to see sample data
 4. **Upload Files**: Drag & drop bank statements, receipts, or CSV files
