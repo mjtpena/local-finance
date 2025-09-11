@@ -16,10 +16,71 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', 'Segoe UI Variable', -apple-system, BlinkMacSystemFont, system-ui, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--vscode-editor-background);
+            color: var(--vscode-editor-foreground);
             min-height: 100vh;
             padding: 20px;
+            margin: 0;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        
+        /* VS Code Theme Variables */
+        :root {
+            --vscode-editor-background: #1e1e1e;
+            --vscode-editor-foreground: #d4d4d4;
+            --vscode-sidebar-background: #252526;
+            --vscode-panel-background: #2d2d30;
+            --vscode-input-background: #3c3c3c;
+            --vscode-button-background: #0e639c;
+            --vscode-button-hover-background: #1177bb;
+            --vscode-border-color: #3c3c3c;
+            --vscode-text-link-foreground: #4fc1ff;
+            --vscode-list-active-background: #094771;
+            --vscode-list-hover-background: #2a2d2e;
+            --vscode-success-foreground: #89d185;
+            --vscode-error-foreground: #f85149;
+            --vscode-warning-foreground: #ffab70;
+            --vscode-card-background: #252526;
+            --vscode-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        :root[data-theme="light"] {
+            --vscode-editor-background: #ffffff;
+            --vscode-editor-foreground: #24292f;
+            --vscode-sidebar-background: #f6f8fa;
+            --vscode-panel-background: #f6f8fa;
+            --vscode-input-background: #ffffff;
+            --vscode-button-background: #0969da;
+            --vscode-button-hover-background: #0550ae;
+            --vscode-border-color: #d1d9e0;
+            --vscode-text-link-foreground: #0969da;
+            --vscode-list-active-background: #dbeafe;
+            --vscode-list-hover-background: #f3f4f6;
+            --vscode-success-foreground: #1a7f37;
+            --vscode-error-foreground: #d1242f;
+            --vscode-warning-foreground: #bf8700;
+            --vscode-card-background: #ffffff;
+            --vscode-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+        }
+
+        :root[data-theme="dark"] {
+            --vscode-editor-background: #1e1e1e;
+            --vscode-editor-foreground: #d4d4d4;
+            --vscode-sidebar-background: #252526;
+            --vscode-panel-background: #2d2d30;
+            --vscode-input-background: #3c3c3c;
+            --vscode-button-background: #0e639c;
+            --vscode-button-hover-background: #1177bb;
+            --vscode-border-color: #3c3c3c;
+            --vscode-text-link-foreground: #4fc1ff;
+            --vscode-list-active-background: #094771;
+            --vscode-list-hover-background: #2a2d2e;
+            --vscode-success-foreground: #89d185;
+            --vscode-error-foreground: #f85149;
+            --vscode-warning-foreground: #ffab70;
+            --vscode-card-background: #252526;
+            --vscode-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
 
         .container {
@@ -28,33 +89,99 @@
         }
 
         .header {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            background: var(--vscode-panel-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 6px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--vscode-shadow);
+            position: relative;
         }
 
         .header h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2.5em;
+            color: var(--vscode-editor-foreground);
+            margin-bottom: 12px;
+            font-size: 2.2em;
+            font-weight: 600;
+            letter-spacing: -0.025em;
         }
 
         .header p {
-            color: #666;
-            font-size: 1.1em;
+            color: var(--vscode-editor-foreground);
+            opacity: 0.8;
+            font-size: 1.05em;
+            font-weight: 400;
         }
 
+        .header-badges {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            gap: 16px;
+        }
+        
         .privacy-badge {
             display: inline-flex;
             align-items: center;
-            background: #10b981;
+            background: var(--vscode-success-foreground);
+            color: var(--vscode-editor-background);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        
+        .theme-toggle {
+            background: var(--vscode-button-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            padding: 8px;
+            cursor: pointer;
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin-top: 15px;
-            font-size: 0.9em;
+            transition: all 0.2s;
+            position: relative;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--vscode-button-hover-background);
+        }
+        
+        .theme-icon {
+            width: 18px;
+            height: 18px;
+            position: absolute;
+            transition: opacity 0.2s;
+        }
+        
+        /* Default dark theme icons */
+        :root .sun-icon {
+            opacity: 1;
+        }
+        
+        :root .moon-icon {
+            opacity: 0;
+        }
+        
+        :root[data-theme="dark"] .sun-icon {
+            opacity: 1;
+        }
+        
+        :root[data-theme="dark"] .moon-icon {
+            opacity: 0;
+        }
+        
+        :root[data-theme="light"] .sun-icon {
+            opacity: 0;
+        }
+        
+        :root[data-theme="light"] .moon-icon {
+            opacity: 1;
         }
 
         .privacy-badge svg {
@@ -64,40 +191,41 @@
         }
 
         .upload-section {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            background: var(--vscode-panel-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 6px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--vscode-shadow);
             text-align: center;
         }
 
         .upload-area {
-            border: 3px dashed #cbd5e0;
-            border-radius: 15px;
-            padding: 60px 40px;
+            border: 2px dashed var(--vscode-border-color);
+            border-radius: 6px;
+            padding: 48px 32px;
             cursor: pointer;
-            transition: all 0.3s;
-            background: #f7fafc;
+            transition: all 0.2s;
+            background: var(--vscode-input-background);
         }
 
         .upload-area:hover {
-            border-color: #667eea;
-            background: #edf2ff;
+            border-color: var(--vscode-text-link-foreground);
+            background: var(--vscode-list-hover-background);
         }
 
         .upload-area.dragover {
-            border-color: #667eea;
-            background: #edf2ff;
-            transform: scale(1.02);
+            border-color: var(--vscode-text-link-foreground);
+            background: var(--vscode-list-active-background);
+            transform: scale(1.01);
         }
 
         .upload-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            background: var(--vscode-button-background);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -121,38 +249,41 @@
         }
 
         .format-badge {
-            padding: 6px 12px;
-            background: #f3f4f6;
-            border-radius: 20px;
-            font-size: 0.85em;
-            color: #4b5563;
+            padding: 4px 8px;
+            background: var(--vscode-input-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            font-size: 0.8em;
+            color: var(--vscode-editor-foreground);
             font-weight: 500;
         }
 
         .format-badge.pdf {
-            background: #fee2e2;
-            color: #dc2626;
+            background: var(--vscode-error-foreground);
+            color: var(--vscode-editor-background);
         }
 
         .format-badge.csv {
-            background: #dcfce7;
-            color: #16a34a;
+            background: var(--vscode-success-foreground);
+            color: var(--vscode-editor-background);
         }
 
         .sample-data-btn {
-            margin-top: 20px;
-            padding: 12px 24px;
-            background: #f3f4f6;
-            border: none;
-            border-radius: 10px;
-            color: #374151;
+            margin-top: 16px;
+            padding: 10px 16px;
+            background: var(--vscode-input-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            color: var(--vscode-editor-foreground);
             cursor: pointer;
-            font-size: 0.95em;
-            transition: background 0.3s;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            font-family: inherit;
         }
 
         .sample-data-btn:hover {
-            background: #e5e7eb;
+            background: var(--vscode-list-hover-background);
+            border-color: var(--vscode-text-link-foreground);
         }
 
         .dashboard {
@@ -166,19 +297,21 @@
         }
 
         .card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            background: var(--vscode-card-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: var(--vscode-shadow);
         }
 
         .card h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.3em;
+            color: var(--vscode-editor-foreground);
+            margin-bottom: 16px;
+            font-size: 1.2em;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .card h2 svg {
@@ -194,9 +327,10 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            padding: 20px;
+            background: var(--vscode-button-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 6px;
+            padding: 16px;
             color: white;
         }
 
@@ -230,31 +364,33 @@
         }
 
         .transactions-table th {
-            background: #f3f4f6;
+            background: var(--vscode-panel-background);
             padding: 12px;
             text-align: left;
             font-weight: 600;
-            color: #374151;
-            border-bottom: 2px solid #e5e7eb;
+            color: var(--vscode-editor-foreground);
+            border-bottom: 1px solid var(--vscode-border-color);
+            font-size: 0.9em;
         }
 
         .transactions-table td {
             padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-            color: #4b5563;
+            border-bottom: 1px solid var(--vscode-border-color);
+            color: var(--vscode-editor-foreground);
+            font-size: 0.85em;
         }
 
         .transactions-table tr:hover {
-            background: #f9fafb;
+            background: var(--vscode-list-hover-background);
         }
 
         .amount-positive {
-            color: #10b981;
+            color: var(--vscode-success-foreground);
             font-weight: 600;
         }
 
         .amount-negative {
-            color: #ef4444;
+            color: var(--vscode-error-foreground);
             font-weight: 600;
         }
 
@@ -275,10 +411,13 @@
 
         .filter-controls select,
         .filter-controls input {
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 0.95em;
+            padding: 6px 8px;
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            font-size: 0.85em;
+            background: var(--vscode-input-background);
+            color: var(--vscode-editor-foreground);
+            font-family: inherit;
         }
 
         .budget-item {
@@ -289,36 +428,37 @@
 
         .budget-label {
             flex: 1;
-            font-size: 0.95em;
-            color: #4b5563;
+            font-size: 0.85em;
+            color: var(--vscode-editor-foreground);
         }
 
         .budget-bar {
             flex: 2;
-            height: 30px;
-            background: #f3f4f6;
-            border-radius: 15px;
+            height: 24px;
+            background: var(--vscode-input-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
             overflow: hidden;
             position: relative;
-            margin: 0 15px;
+            margin: 0 12px;
         }
 
         .budget-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            background: var(--vscode-text-link-foreground);
             transition: width 0.5s;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding-right: 10px;
+            padding-right: 8px;
             color: white;
-            font-size: 0.85em;
+            font-size: 0.8em;
             font-weight: 500;
         }
 
         .budget-amount {
-            font-size: 0.9em;
-            color: #374151;
+            font-size: 0.8em;
+            color: var(--vscode-editor-foreground);
             font-weight: 500;
             min-width: 100px;
             text-align: right;
@@ -329,14 +469,15 @@
         }
 
         .insights-list li {
-            padding: 15px;
-            background: #f9fafb;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border-left: 4px solid #667eea;
-            color: #4b5563;
-            font-size: 0.95em;
-            line-height: 1.6;
+            padding: 12px;
+            background: var(--vscode-input-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--vscode-text-link-foreground);
+            color: var(--vscode-editor-foreground);
+            font-size: 0.85em;
+            line-height: 1.5;
         }
 
         .export-buttons {
@@ -346,18 +487,21 @@
         }
 
         .export-btn {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 8px 16px;
+            background: var(--vscode-button-background);
             color: white;
-            border: none;
-            border-radius: 10px;
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.95em;
-            transition: transform 0.2s;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-weight: 500;
         }
 
         .export-btn:hover {
-            transform: translateY(-2px);
+            background: var(--vscode-button-hover-background);
+            transform: translateY(-1px);
         }
 
         .document-list {
@@ -368,29 +512,33 @@
         }
 
         .document-item {
-            background: #f9fafb;
-            border-radius: 10px;
-            padding: 15px;
-            border-left: 4px solid #667eea;
+            background: var(--vscode-input-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            padding: 12px;
+            border-left: 3px solid var(--vscode-text-link-foreground);
             position: relative;
         }
 
         .document-item.active {
-            background: #eef2ff;
-            border-left-color: #3b82f6;
+            background: var(--vscode-list-active-background);
+            border-left-color: var(--vscode-text-link-foreground);
+            border-color: var(--vscode-text-link-foreground);
         }
 
         .document-name {
             font-weight: 600;
-            color: #374151;
-            margin-bottom: 5px;
+            color: var(--vscode-editor-foreground);
+            margin-bottom: 4px;
             cursor: pointer;
+            font-size: 0.9em;
         }
 
         .document-stats {
-            font-size: 0.85em;
-            color: #6b7280;
-            margin-bottom: 10px;
+            font-size: 0.75em;
+            color: var(--vscode-editor-foreground);
+            opacity: 0.7;
+            margin-bottom: 8px;
         }
 
         .document-actions {
@@ -408,52 +556,58 @@
         }
 
         .document-btn.view {
-            background: #e0e7ff;
-            color: #3730a3;
+            background: var(--vscode-button-background);
+            color: white;
         }
 
         .document-btn.view:hover {
-            background: #c7d2fe;
+            background: var(--vscode-button-hover-background);
         }
 
         .document-btn.remove {
-            background: #fee2e2;
-            color: #dc2626;
+            background: var(--vscode-error-foreground);
+            color: white;
         }
 
         .document-btn.remove:hover {
-            background: #fecaca;
+            background: var(--vscode-error-foreground);
+            opacity: 0.8;
         }
 
         .processing-status {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f0f9ff;
-            border-radius: 10px;
-            border-left: 4px solid #0ea5e9;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--vscode-panel-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            border-left: 3px solid var(--vscode-text-link-foreground);
         }
 
         .processing-progress {
             flex: 1;
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
+            height: 6px;
+            background: var(--vscode-input-background);
+            border-radius: 3px;
             overflow: hidden;
         }
 
         .processing-progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+            background: var(--vscode-text-link-foreground);
             transition: width 0.3s;
         }
 
         .loading {
             display: none;
             text-align: center;
-            padding: 40px;
+            padding: 32px;
+            background: var(--vscode-panel-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 6px;
+            margin-bottom: 24px;
         }
 
         .loading.active {
@@ -461,13 +615,13 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f4f6;
-            border-top-color: #667eea;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--vscode-border-color);
+            border-top-color: var(--vscode-text-link-foreground);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 16px;
         }
 
         @keyframes spin {
@@ -505,10 +659,11 @@
         }
 
         .account-info {
-            background: #eef2ff;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
+            background: var(--vscode-input-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 16px;
         }
 
         .account-info-item {
@@ -519,11 +674,12 @@
         }
 
         .account-info-label {
-            color: #6b7280;
+            color: var(--vscode-editor-foreground);
+            opacity: 0.7;
         }
 
         .account-info-value {
-            color: #374151;
+            color: var(--vscode-editor-foreground);
             font-weight: 600;
         }
 
@@ -543,11 +699,21 @@
         <div class="header">
             <h1>💰 Personal Finance Dashboard</h1>
             <p>Analyze bank statements from PDFs or CSVs - Extract, visualize, and gain insights</p>
-            <div class="privacy-badge">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                </svg>
-                100% Private - No data leaves your device
+            <div class="header-badges">
+                <div class="privacy-badge">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    100% Private - No data leaves your device
+                </div>
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                    <svg class="theme-icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <svg class="theme-icon moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -558,13 +724,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                     </svg>
                 </div>
-                <h3 style="color: #374151; margin-bottom: 10px;">Drop your bank statements here</h3>
-                <p style="color: #6b7280; margin-bottom: 20px;">Support multiple files - or click to browse</p>
+                <h3 style="color: var(--vscode-editor-foreground); margin-bottom: 10px; font-weight: 600;">Drop your bank statements here</h3>
+                <p style="color: var(--vscode-editor-foreground); opacity: 0.7; margin-bottom: 20px;">Support multiple files - or click to browse</p>
                 <div class="format-badges">
                     <span class="format-badge pdf">PDF Statements</span>
                     <span class="format-badge csv">CSV Exports</span>
                 </div>
-                <p style="color: #9ca3af; font-size: 0.9em; margin-top: 15px;">
+                <p style="color: var(--vscode-editor-foreground); opacity: 0.6; font-size: 0.8em; margin-top: 15px;">
                     Supports: HSBC, Commonwealth Bank, ANZ, Westpac, NAB, and most major banks
                 </p>
                 <input type="file" id="fileInput" accept=".pdf,.csv" multiple>
@@ -578,7 +744,7 @@
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p style="color: white; font-size: 1.1em;">Extracting and analyzing your financial data...</p>
+            <p style="color: var(--vscode-editor-foreground); font-size: 1em; opacity: 0.9;">Extracting and analyzing your financial data...</p>
         </div>
 
         <div class="dashboard" id="dashboard">
@@ -2000,6 +2166,62 @@
             combineDocumentData();
             updateDocumentManager();
         }
+        
+        // Theme switching functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            console.log('Theme switching from', currentTheme, 'to', newTheme);
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('preferred-theme', newTheme);
+            
+            // Apply theme immediately with inline styles as fallback
+            if (newTheme === 'light') {
+                document.documentElement.style.setProperty('--vscode-editor-background', '#ffffff');
+                document.documentElement.style.setProperty('--vscode-editor-foreground', '#24292f');
+                document.documentElement.style.setProperty('--vscode-panel-background', '#f6f8fa');
+                document.documentElement.style.setProperty('--vscode-card-background', '#ffffff');
+                document.documentElement.style.setProperty('--vscode-border-color', '#d1d9e0');
+            } else {
+                document.documentElement.style.setProperty('--vscode-editor-background', '#1e1e1e');
+                document.documentElement.style.setProperty('--vscode-editor-foreground', '#d4d4d4');
+                document.documentElement.style.setProperty('--vscode-panel-background', '#2d2d30');
+                document.documentElement.style.setProperty('--vscode-card-background', '#252526');
+                document.documentElement.style.setProperty('--vscode-border-color', '#3c3c3c');
+            }
+        }
+        
+        // Initialize theme on page load
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const defaultTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            
+            console.log('Initializing theme:', defaultTheme);
+            document.documentElement.setAttribute('data-theme', defaultTheme);
+            
+            // Ensure the theme is applied immediately
+            if (defaultTheme === 'light') {
+                document.documentElement.style.setProperty('--vscode-editor-background', '#ffffff');
+                document.documentElement.style.setProperty('--vscode-editor-foreground', '#24292f');
+            } else {
+                document.documentElement.style.setProperty('--vscode-editor-background', '#1e1e1e');
+                document.documentElement.style.setProperty('--vscode-editor-foreground', '#d4d4d4');
+            }
+        }
+        
+        // Initialize theme immediately
+        initializeTheme();
+        
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('preferred-theme')) {
+                const newTheme = e.matches ? 'dark' : 'light';
+                console.log('System theme changed to:', newTheme);
+                document.documentElement.setAttribute('data-theme', newTheme);
+            }
+        });
         
         function loadSampleData() {
             const sampleData = generateSampleData();
