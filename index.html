@@ -504,6 +504,239 @@
             transform: translateY(-1px);
         }
 
+        /* Analysis Controls Styles */
+        .analysis-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            min-width: 100px;
+            color: var(--vscode-editor-foreground);
+        }
+
+        .date-input, .search-input {
+            padding: 6px 10px;
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            background: var(--vscode-input-background);
+            color: var(--vscode-editor-foreground);
+            font-family: inherit;
+        }
+
+        .control-btn, .filter-btn {
+            padding: 6px 12px;
+            background: var(--vscode-button-background);
+            color: white;
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .control-btn:hover, .filter-btn:hover {
+            background: var(--vscode-button-hover-background);
+        }
+
+        .filter-btn {
+            background: var(--vscode-panel-background);
+            color: var(--vscode-editor-foreground);
+        }
+
+        .filter-btn:hover {
+            background: var(--vscode-list-hover-background);
+        }
+
+        .filter-btn.active {
+            background: var(--vscode-list-active-background);
+            color: white;
+        }
+
+        /* Document Analysis Grid */
+        .document-analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .doc-analysis-card {
+            background: var(--vscode-sidebar-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .doc-analysis-card h4 {
+            margin: 0 0 10px 0;
+            color: var(--vscode-text-link-foreground);
+        }
+
+        .analysis-metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .analysis-metric .label {
+            color: var(--vscode-editor-foreground);
+        }
+
+        .analysis-metric .value {
+            font-weight: 600;
+            color: var(--vscode-text-link-foreground);
+        }
+
+        /* Insights Grid */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .insight-card {
+            background: var(--vscode-sidebar-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .insight-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 1em;
+        }
+
+        .insight-card.warning {
+            border-left: 4px solid var(--vscode-warning-foreground);
+        }
+
+        .insight-card.error {
+            border-left: 4px solid var(--vscode-error-foreground);
+        }
+
+        .insight-card.success {
+            border-left: 4px solid var(--vscode-success-foreground);
+        }
+
+        .insight-card.info {
+            border-left: 4px solid var(--vscode-text-link-foreground);
+        }
+
+        .count-badge {
+            background: var(--vscode-badge-background);
+            color: var(--vscode-badge-foreground);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        /* Pagination Styles */
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--vscode-sidebar-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 6px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .pagination-info {
+            color: var(--vscode-editor-foreground);
+            font-size: 0.9em;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pagination-btn {
+            padding: 6px 12px;
+            background: var(--vscode-button-background);
+            color: white;
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--vscode-button-hover-background);
+        }
+
+        .pagination-btn:disabled {
+            background: var(--vscode-panel-background);
+            color: var(--vscode-descriptionForeground);
+            cursor: not-allowed;
+        }
+
+        .pagination-pages {
+            display: flex;
+            gap: 4px;
+            margin: 0 10px;
+        }
+
+        .page-number {
+            padding: 6px 10px;
+            background: var(--vscode-panel-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            color: var(--vscode-editor-foreground);
+            transition: all 0.2s;
+        }
+
+        .page-number:hover {
+            background: var(--vscode-list-hover-background);
+        }
+
+        .page-number.active {
+            background: var(--vscode-list-active-background);
+            color: white;
+        }
+
+        .pagination-size {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination-size label {
+            color: var(--vscode-editor-foreground);
+            font-size: 0.9em;
+        }
+
+        .pagination-size select {
+            padding: 4px 8px;
+            background: var(--vscode-input-background);
+            color: var(--vscode-editor-foreground);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
         .document-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -859,6 +1092,59 @@
                 </div>
             </div>
 
+            <!-- Enhanced Analysis Dashboard -->
+            <div class="card full-width" id="analysisToolbar" style="display: none;">
+                <h3>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px; display: inline; vertical-align: text-bottom; margin-right: 8px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Ad-hoc Analysis Tools
+                </h3>
+                <div class="analysis-controls">
+                    <div class="control-group">
+                        <label>Date Range:</label>
+                        <input type="date" id="analysisStartDate" class="date-input">
+                        <input type="date" id="analysisEndDate" class="date-input">
+                        <button class="control-btn" onclick="applyDateFilter()">Apply</button>
+                    </div>
+                    <div class="control-group">
+                        <label>Quick Filters:</label>
+                        <button class="filter-btn" onclick="findDuplicates()">Find Duplicates</button>
+                        <button class="filter-btn" onclick="findTransfers()">Find Transfers</button>
+                        <button class="filter-btn" onclick="findAnomalies()">Find Anomalies</button>
+                        <button class="filter-btn" onclick="analyzeFrequency()">Frequency Analysis</button>
+                    </div>
+                    <div class="control-group">
+                        <label>Search:</label>
+                        <input type="text" id="transactionSearch" placeholder="Search transactions (regex supported)" class="search-input">
+                        <button class="control-btn" onclick="searchTransactions()">Search</button>
+                        <button class="control-btn" onclick="clearFilters()">Clear</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Intelligence Panel -->
+            <div class="card full-width" id="documentIntelligence" style="display: none;">
+                <h3>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px; display: inline; vertical-align: text-bottom; margin-right: 8px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Document Intelligence
+                </h3>
+                <div id="documentAnalysis" class="document-analysis-grid"></div>
+            </div>
+
+            <!-- Advanced Insights Panel -->
+            <div class="card full-width" id="advancedInsights" style="display: none;">
+                <h3>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px; display: inline; vertical-align: text-bottom; margin-right: 8px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Advanced Insights
+                </h3>
+                <div id="advancedInsightsList" class="insights-grid"></div>
+            </div>
+
             <!-- Recent Transactions -->
             <div class="card full-width">
                 <h2>
@@ -894,10 +1180,36 @@
                         <tbody id="transactionsBody"></tbody>
                     </table>
                 </div>
+                
+                <!-- Pagination Controls -->
+                <div class="pagination-controls" id="paginationControls" style="display: none;">
+                    <div class="pagination-info">
+                        <span id="paginationInfo">Showing 0-0 of 0 transactions</span>
+                    </div>
+                    <div class="pagination-buttons">
+                        <button class="pagination-btn" id="firstPageBtn" onclick="goToPage(1)">First</button>
+                        <button class="pagination-btn" id="prevPageBtn" onclick="goToPage(currentPage - 1)">Previous</button>
+                        <span class="pagination-pages" id="pageNumbers"></span>
+                        <button class="pagination-btn" id="nextPageBtn" onclick="goToPage(currentPage + 1)">Next</button>
+                        <button class="pagination-btn" id="lastPageBtn" onclick="goToPage(totalPages)">Last</button>
+                    </div>
+                    <div class="pagination-size">
+                        <label>Items per page:</label>
+                        <select id="pageSize" onchange="changePageSize()">
+                            <option value="10">10</option>
+                            <option value="25" selected>25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+                
                 <div class="export-buttons">
                     <button class="export-btn" onclick="exportToCSV()">Export to CSV</button>
-                    <button class="export-btn" onclick="generateReport()">Generate Report</button>
+                    <button class="export-btn" onclick="generateEnhancedReport()">Enhanced Report</button>
+                    <button class="export-btn" onclick="generateTaxReport()">Tax Summary</button>
                     <button class="export-btn" onclick="showAllDocuments()">Show All Documents</button>
+                    <button class="export-btn" onclick="clearSession()">Clear Session</button>
                 </div>
             </div>
         </div>
@@ -1334,7 +1646,8 @@
             // Update UI
             updateStats();
             updateCharts();
-            updateTransactionsTable();
+            displayedTransactions = transactions;
+            updateTransactionsDisplayWithPagination();
             updateBudgetView();
             generateInsights();
             updateFilters();
@@ -1486,7 +1799,8 @@
             // Update UI
             updateStats();
             updateCharts();
-            updateTransactionsTable();
+            displayedTransactions = transactions;
+            updateTransactionsDisplayWithPagination();
             updateBudgetView();
             generateInsights();
             updateFilters();
@@ -1842,21 +2156,9 @@
         }
 
         function updateTransactionsTable() {
-            const tbody = document.getElementById('transactionsBody');
-            tbody.innerHTML = '';
-            
-            transactions.slice(0, 50).forEach(t => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${t.date.toLocaleDateString()}</td>
-                    <td>${t.description}</td>
-                    <td><span class="category-badge" style="background: ${categoryColors[t.category]}20; color: ${categoryColors[t.category]}">${t.category}</span></td>
-                    <td class="${t.type === 'income' ? 'amount-positive' : 'amount-negative'}">${formatCurrency(Math.abs(t.amount))}</td>
-                    <td>${t.balance ? formatCurrency(t.balance) : '-'}</td>
-                    <td style="font-size: 0.8em; color: #6b7280;">${t.sourceDocument || 'Unknown'}</td>
-                `;
-                tbody.appendChild(row);
-            });
+            // Use the new pagination system instead of limiting to 50
+            displayedTransactions = transactions;
+            updateTransactionsDisplayWithPagination();
         }
 
         function updateFilters() {
@@ -1903,21 +2205,10 @@
                 filtered = filtered.filter(t => t.date <= new Date(endDate));
             }
             
-            const tbody = document.getElementById('transactionsBody');
-            tbody.innerHTML = '';
-            
-            filtered.slice(0, 50).forEach(t => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${t.date.toLocaleDateString()}</td>
-                    <td>${t.description}</td>
-                    <td><span class="category-badge" style="background: ${categoryColors[t.category]}20; color: ${categoryColors[t.category]}">${t.category}</span></td>
-                    <td class="${t.type === 'income' ? 'amount-positive' : 'amount-negative'}">${formatCurrency(Math.abs(t.amount))}</td>
-                    <td>${t.balance ? formatCurrency(t.balance) : '-'}</td>
-                    <td style="font-size: 0.8em; color: #6b7280;">${t.sourceDocument || 'Unknown'}</td>
-                `;
-                tbody.appendChild(row);
-            });
+            // Update using new pagination system
+            filteredTransactions = filtered;
+            currentPage = 1;
+            updateTransactionsDisplayWithPagination();
         }
 
         function formatCurrency(amount) {
@@ -2023,7 +2314,8 @@
             generateBudgets();
             updateStats();
             updateCharts();
-            updateTransactionsTable();
+            displayedTransactions = transactions;
+            updateTransactionsDisplayWithPagination();
             updateBudgetView();
             generateInsights();
             updateFilters();
@@ -2112,7 +2404,8 @@
             generateBudgets();
             updateStats();
             updateCharts();
-            updateTransactionsTable();
+            displayedTransactions = transactions;
+            updateTransactionsDisplayWithPagination();
             updateBudgetView();
             generateInsights();
             updateFilters();
@@ -2342,6 +2635,763 @@
             
             alert('Financial report generated! The report includes your transaction summary, monthly breakdown, category analysis, and personalized insights.');
         }
+
+        // ===== AD-HOC ANALYSIS FEATURES =====
+
+        // Global variables for filtering and pagination
+        let filteredTransactions = [];
+        let currentFilters = {
+            dateRange: null,
+            search: null,
+            duplicates: false,
+            transfers: false,
+            anomalies: false
+        };
+        let currentPage = 1;
+        let pageSize = 25;
+        let totalPages = 1;
+        let displayedTransactions = [];
+
+        // Document Comparison & Consolidation
+        function findDuplicates() {
+            const duplicates = [];
+            const seen = new Map();
+            
+            transactions.forEach((transaction, index) => {
+                const key = `${transaction.date.toDateString()}_${Math.abs(transaction.amount)}_${transaction.description.toLowerCase().trim()}`;
+                
+                if (seen.has(key)) {
+                    const originalIndex = seen.get(key);
+                    duplicates.push({
+                        original: transactions[originalIndex],
+                        duplicate: transaction,
+                        confidence: calculateDuplicateConfidence(transactions[originalIndex], transaction)
+                    });
+                } else {
+                    seen.set(key, index);
+                }
+            });
+            
+            displayDuplicates(duplicates);
+            document.querySelector('[onclick="findDuplicates()"]').classList.add('active');
+        }
+
+        function calculateDuplicateConfidence(t1, t2) {
+            let score = 0;
+            
+            // Same date
+            if (t1.date.toDateString() === t2.date.toDateString()) score += 30;
+            
+            // Same amount
+            if (Math.abs(t1.amount - t2.amount) < 0.01) score += 40;
+            
+            // Similar description
+            const desc1 = t1.description.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const desc2 = t2.description.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const similarity = calculateStringSimilarity(desc1, desc2);
+            score += similarity * 30;
+            
+            return Math.round(score);
+        }
+
+        function calculateStringSimilarity(str1, str2) {
+            const longer = str1.length > str2.length ? str1 : str2;
+            const shorter = str1.length > str2.length ? str2 : str1;
+            
+            if (longer.length === 0) return 1.0;
+            
+            const editDistance = levenshteinDistance(longer, shorter);
+            return (longer.length - editDistance) / longer.length;
+        }
+
+        function levenshteinDistance(str1, str2) {
+            const matrix = [];
+            
+            for (let i = 0; i <= str2.length; i++) {
+                matrix[i] = [i];
+            }
+            
+            for (let j = 0; j <= str1.length; j++) {
+                matrix[0][j] = j;
+            }
+            
+            for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                    if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            
+            return matrix[str2.length][str1.length];
+        }
+
+        function findTransfers() {
+            const transfers = [];
+            const tolerance = 0.01; // Allow for small differences due to fees
+            
+            transactions.forEach((transaction, index) => {
+                if (transaction.type === 'expense') {
+                    // Look for corresponding income transaction
+                    const matches = transactions.filter((t, i) => 
+                        i !== index && 
+                        t.type === 'income' && 
+                        Math.abs(Math.abs(transaction.amount) - t.amount) <= tolerance &&
+                        Math.abs(transaction.date.getTime() - t.date.getTime()) <= 3 * 24 * 60 * 60 * 1000 // Within 3 days
+                    );
+                    
+                    matches.forEach(match => {
+                        transfers.push({
+                            outgoing: transaction,
+                            incoming: match,
+                            difference: Math.abs(Math.abs(transaction.amount) - match.amount)
+                        });
+                    });
+                }
+            });
+            
+            displayTransfers(transfers);
+            document.querySelector('[onclick="findTransfers()"]').classList.add('active');
+        }
+
+        function findAnomalies() {
+            const anomalies = [];
+            
+            // Calculate statistics by category
+            const categoryStats = {};
+            Object.keys(categories).forEach(category => {
+                const categoryTransactions = transactions.filter(t => t.category === category && t.type === 'expense');
+                if (categoryTransactions.length > 0) {
+                    const amounts = categoryTransactions.map(t => Math.abs(t.amount));
+                    const mean = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+                    const variance = amounts.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / amounts.length;
+                    const stdDev = Math.sqrt(variance);
+                    
+                    categoryStats[category] = { mean, stdDev, transactions: categoryTransactions };
+                }
+            });
+            
+            // Find transactions that are more than 2 standard deviations from the mean
+            Object.entries(categoryStats).forEach(([category, stats]) => {
+                stats.transactions.forEach(transaction => {
+                    const zScore = Math.abs((Math.abs(transaction.amount) - stats.mean) / stats.stdDev);
+                    if (zScore > 2 && stats.stdDev > 0) {
+                        anomalies.push({
+                            transaction,
+                            zScore: zScore.toFixed(2),
+                            reason: `${zScore.toFixed(1)}σ from mean for ${category}`,
+                            expectedRange: `$${(stats.mean - 2 * stats.stdDev).toFixed(2)} - $${(stats.mean + 2 * stats.stdDev).toFixed(2)}`
+                        });
+                    }
+                });
+            });
+            
+            // Also find weekend/unusual time transactions
+            transactions.forEach(transaction => {
+                const day = transaction.date.getDay();
+                const hour = transaction.date.getHours();
+                
+                if ((day === 0 || day === 6) && Math.abs(transaction.amount) > 100) {
+                    anomalies.push({
+                        transaction,
+                        reason: 'Large weekend transaction',
+                        zScore: 'N/A'
+                    });
+                }
+                
+                if ((hour < 6 || hour > 22) && Math.abs(transaction.amount) > 50) {
+                    anomalies.push({
+                        transaction,
+                        reason: 'Late night/early morning transaction',
+                        zScore: 'N/A'
+                    });
+                }
+            });
+            
+            displayAnomalies(anomalies);
+            document.querySelector('[onclick="findAnomalies()"]').classList.add('active');
+        }
+
+        function analyzeFrequency() {
+            const merchantFrequency = {};
+            const categoryFrequency = {};
+            
+            transactions.forEach(transaction => {
+                // Merchant frequency
+                const merchant = transaction.description.split(' ')[0].toLowerCase();
+                merchantFrequency[merchant] = (merchantFrequency[merchant] || 0) + 1;
+                
+                // Category frequency
+                categoryFrequency[transaction.category] = (categoryFrequency[transaction.category] || 0) + 1;
+            });
+            
+            // Find recurring patterns
+            const recurringMerchants = Object.entries(merchantFrequency)
+                .filter(([merchant, count]) => count >= 3)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            // Find potential subscriptions (similar amounts, regular intervals)
+            const potentialSubscriptions = findSubscriptions();
+            
+            displayFrequencyAnalysis({
+                recurringMerchants,
+                categoryFrequency,
+                potentialSubscriptions
+            });
+            
+            document.querySelector('[onclick="analyzeFrequency()"]').classList.add('active');
+        }
+
+        function findSubscriptions() {
+            const subscriptions = [];
+            const merchantGroups = {};
+            
+            transactions.forEach(transaction => {
+                const merchant = transaction.description.toLowerCase().replace(/[^a-z]/g, '');
+                if (!merchantGroups[merchant]) merchantGroups[merchant] = [];
+                merchantGroups[merchant].push(transaction);
+            });
+            
+            Object.entries(merchantGroups).forEach(([merchant, transactions]) => {
+                if (transactions.length >= 3) {
+                    const amounts = transactions.map(t => Math.abs(t.amount));
+                    const avgAmount = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+                    const variance = amounts.reduce((a, b) => a + Math.pow(b - avgAmount, 2), 0) / amounts.length;
+                    
+                    // If amounts are similar (low variance) and occur regularly
+                    if (variance < avgAmount * 0.1) {
+                        const dates = transactions.map(t => t.date).sort((a, b) => a - b);
+                        const intervals = [];
+                        for (let i = 1; i < dates.length; i++) {
+                            const daysDiff = (dates[i] - dates[i-1]) / (1000 * 60 * 60 * 24);
+                            intervals.push(daysDiff);
+                        }
+                        
+                        const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                        if (avgInterval >= 25 && avgInterval <= 35) { // Monthly-ish
+                            subscriptions.push({
+                                merchant: transactions[0].description,
+                                amount: avgAmount,
+                                frequency: `Every ${Math.round(avgInterval)} days`,
+                                transactions: transactions.length
+                            });
+                        }
+                    }
+                }
+            });
+            
+            return subscriptions;
+        }
+
+        // Search and filtering functions
+        function searchTransactions() {
+            const searchTerm = document.getElementById('transactionSearch').value;
+            if (!searchTerm) {
+                clearFilters();
+                return;
+            }
+            
+            try {
+                const regex = new RegExp(searchTerm, 'i');
+                filteredTransactions = transactions.filter(t => 
+                    regex.test(t.description) || 
+                    regex.test(t.category) || 
+                    regex.test(t.amount.toString())
+                );
+                
+                currentFilters.search = searchTerm;
+                currentPage = 1;
+                updateTransactionsDisplayWithPagination();
+                
+            } catch (e) {
+                // If regex is invalid, do simple text search
+                const term = searchTerm.toLowerCase();
+                filteredTransactions = transactions.filter(t => 
+                    t.description.toLowerCase().includes(term) || 
+                    t.category.toLowerCase().includes(term) || 
+                    t.amount.toString().includes(term)
+                );
+                
+                currentFilters.search = searchTerm;
+                currentPage = 1;
+                updateTransactionsDisplayWithPagination();
+            }
+        }
+
+        function applyDateFilter() {
+            const startDate = new Date(document.getElementById('analysisStartDate').value);
+            const endDate = new Date(document.getElementById('analysisEndDate').value);
+            
+            if (startDate && endDate) {
+                filteredTransactions = transactions.filter(t => 
+                    t.date >= startDate && t.date <= endDate
+                );
+                
+                currentFilters.dateRange = { startDate, endDate };
+                currentPage = 1;
+                updateTransactionsDisplayWithPagination();
+                updateStatsForFiltered(filteredTransactions);
+            }
+        }
+
+        function clearFilters() {
+            filteredTransactions = [];
+            currentFilters = {
+                dateRange: null,
+                search: null,
+                duplicates: false,
+                transfers: false,
+                anomalies: false
+            };
+            
+            // Clear all filter inputs
+            document.getElementById('transactionSearch').value = '';
+            document.getElementById('analysisStartDate').value = '';
+            document.getElementById('analysisEndDate').value = '';
+            
+            // Clear original filter inputs too
+            const categoryFilter = document.getElementById('categoryFilter');
+            const typeFilter = document.getElementById('typeFilter');
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+            
+            if (categoryFilter) categoryFilter.value = '';
+            if (typeFilter) typeFilter.value = '';
+            if (startDate) startDate.value = '';
+            if (endDate) endDate.value = '';
+            
+            // Remove active states
+            document.querySelectorAll('.filter-btn.active').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Reset pagination
+            currentPage = 1;
+            
+            // Update display with all transactions
+            displayedTransactions = transactions;
+            updateTransactionsDisplayWithPagination();
+            hideAnalysisResults();
+        }
+
+        // Display functions
+        function displayDuplicates(duplicates) {
+            const html = `
+                <div class="insight-card error">
+                    <h4>Potential Duplicates Found</h4>
+                    <p>Found ${duplicates.length} potential duplicate transactions:</p>
+                    ${duplicates.map(dup => `
+                        <div style="margin: 10px 0; padding: 10px; background: var(--vscode-panel-background); border-radius: 4px;">
+                            <strong>Confidence: ${dup.confidence}%</strong><br>
+                            Original: ${dup.original.date.toLocaleDateString()} - ${dup.original.description} - $${dup.original.amount}<br>
+                            Duplicate: ${dup.duplicate.date.toLocaleDateString()} - ${dup.duplicate.description} - $${dup.duplicate.amount}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.getElementById('advancedInsightsList').innerHTML = html;
+            document.getElementById('advancedInsights').style.display = 'block';
+        }
+
+        function displayTransfers(transfers) {
+            const html = `
+                <div class="insight-card info">
+                    <h4>Account Transfers Detected</h4>
+                    <p>Found ${transfers.length} potential transfers between accounts:</p>
+                    ${transfers.map(transfer => `
+                        <div style="margin: 10px 0; padding: 10px; background: var(--vscode-panel-background); border-radius: 4px;">
+                            Outgoing: ${transfer.outgoing.date.toLocaleDateString()} - ${transfer.outgoing.description} - $${transfer.outgoing.amount}<br>
+                            Incoming: ${transfer.incoming.date.toLocaleDateString()} - ${transfer.incoming.description} - $${transfer.incoming.amount}<br>
+                            ${transfer.difference > 0 ? `Fee: $${transfer.difference.toFixed(2)}` : 'Exact match'}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.getElementById('advancedInsightsList').innerHTML = html;
+            document.getElementById('advancedInsights').style.display = 'block';
+        }
+
+        function displayAnomalies(anomalies) {
+            const html = `
+                <div class="insight-card warning">
+                    <h4>Transaction Anomalies</h4>
+                    <p>Found ${anomalies.length} unusual transactions:</p>
+                    ${anomalies.map(anomaly => `
+                        <div style="margin: 10px 0; padding: 10px; background: var(--vscode-panel-background); border-radius: 4px;">
+                            <strong>${anomaly.transaction.date.toLocaleDateString()}</strong> - ${anomaly.transaction.description}<br>
+                            Amount: $${anomaly.transaction.amount} | Reason: ${anomaly.reason}<br>
+                            ${anomaly.expectedRange ? `Expected range: ${anomaly.expectedRange}` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.getElementById('advancedInsightsList').innerHTML = html;
+            document.getElementById('advancedInsights').style.display = 'block';
+        }
+
+        function displayFrequencyAnalysis(analysis) {
+            const html = `
+                <div class="insight-card success">
+                    <h4>Frequency Analysis</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h5>Most Frequent Merchants:</h5>
+                            ${analysis.recurringMerchants.map(([merchant, count]) => `
+                                <div>${merchant}: ${count} transactions</div>
+                            `).join('')}
+                        </div>
+                        <div>
+                            <h5>Potential Subscriptions:</h5>
+                            ${analysis.potentialSubscriptions.map(sub => `
+                                <div>
+                                    <strong>${sub.merchant}</strong><br>
+                                    $${sub.amount.toFixed(2)} ${sub.frequency}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('advancedInsightsList').innerHTML = html;
+            document.getElementById('advancedInsights').style.display = 'block';
+        }
+
+        // New unified transaction display system with pagination
+        function updateTransactionsDisplayWithPagination() {
+            const dataToShow = filteredTransactions.length > 0 ? filteredTransactions : displayedTransactions.length > 0 ? displayedTransactions : transactions;
+            
+            // Calculate pagination
+            totalPages = Math.ceil(dataToShow.length / pageSize);
+            currentPage = Math.min(currentPage, Math.max(1, totalPages));
+            
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, dataToShow.length);
+            const pageData = dataToShow.slice(startIndex, endIndex);
+            
+            // Update table
+            const tbody = document.getElementById('transactionsBody');
+            tbody.innerHTML = '';
+            
+            pageData.forEach(t => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${t.date.toLocaleDateString()}</td>
+                    <td>${t.description}</td>
+                    <td><span class="category-badge" style="background: ${categoryColors[t.category] || '#6b7280'}">${t.category}</span></td>
+                    <td class="${t.type}">${t.type === 'income' ? '+' : ''}$${t.amount.toFixed(2)}</td>
+                    <td>${t.balance ? '$' + t.balance.toFixed(2) : '-'}</td>
+                    <td class="source-doc">${t.sourceDocument || 'Unknown'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Update pagination controls
+            updatePaginationControls(dataToShow.length, startIndex + 1, endIndex);
+        }
+
+        function updatePaginationControls(totalItems, startIndex, endIndex) {
+            const paginationControls = document.getElementById('paginationControls');
+            const paginationInfo = document.getElementById('paginationInfo');
+            const pageNumbers = document.getElementById('pageNumbers');
+            const firstBtn = document.getElementById('firstPageBtn');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const lastBtn = document.getElementById('lastPageBtn');
+            
+            // Show/hide pagination
+            if (totalItems > pageSize) {
+                paginationControls.style.display = 'flex';
+                
+                // Update info
+                paginationInfo.textContent = `Showing ${startIndex}-${endIndex} of ${totalItems} transactions`;
+                
+                // Update buttons
+                firstBtn.disabled = currentPage === 1;
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages;
+                lastBtn.disabled = currentPage === totalPages;
+                
+                // Update page numbers
+                pageNumbers.innerHTML = '';
+                const maxVisiblePages = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                
+                if (endPage - startPage < maxVisiblePages - 1) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('span');
+                    pageBtn.className = `page-number ${i === currentPage ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.onclick = () => goToPage(i);
+                    pageNumbers.appendChild(pageBtn);
+                }
+            } else {
+                paginationControls.style.display = 'none';
+            }
+        }
+
+        function goToPage(page) {
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                updateTransactionsDisplayWithPagination();
+            }
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSize').value);
+            currentPage = 1;
+            updateTransactionsDisplayWithPagination();
+        }
+
+        // Legacy function for backward compatibility
+        function updateTransactionsDisplay(transactionsToShow) {
+            displayedTransactions = transactionsToShow;
+            filteredTransactions = transactionsToShow;
+            currentPage = 1;
+            updateTransactionsDisplayWithPagination();
+        }
+
+        function updateStatsForFiltered(filteredTransactions) {
+            const totalIncome = filteredTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const totalExpenses = Math.abs(filteredTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0));
+            
+            document.getElementById('totalIncome').textContent = `$${totalIncome.toFixed(2)}`;
+            document.getElementById('totalExpenses').textContent = `$${totalExpenses.toFixed(2)}`;
+            document.getElementById('netSavings').textContent = `$${(totalIncome - totalExpenses).toFixed(2)}`;
+        }
+
+        function hideAnalysisResults() {
+            document.getElementById('advancedInsights').style.display = 'none';
+            document.getElementById('documentIntelligence').style.display = 'none';
+        }
+
+        // Document Intelligence
+        function generateDocumentIntelligence() {
+            const analysis = uploadedDocuments.map(doc => {
+                const docTransactions = doc.transactions || [];
+                const dateRange = docTransactions.length > 0 ? {
+                    start: new Date(Math.min(...docTransactions.map(t => t.date))),
+                    end: new Date(Math.max(...docTransactions.map(t => t.date)))
+                } : null;
+                
+                const totalSpent = docTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + Math.abs(t.amount), 0);
+                const totalIncome = docTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+                const avgTransaction = docTransactions.length > 0 ? (totalSpent + totalIncome) / docTransactions.length : 0;
+                
+                const categories = {};
+                docTransactions.forEach(t => {
+                    categories[t.category] = (categories[t.category] || 0) + 1;
+                });
+                
+                const topCategory = Object.entries(categories).sort((a, b) => b[1] - a[1])[0];
+                
+                return {
+                    name: doc.name,
+                    type: detectDocumentType(doc),
+                    transactions: docTransactions.length,
+                    dateRange,
+                    totalSpent,
+                    totalIncome,
+                    avgTransaction,
+                    topCategory: topCategory ? topCategory[0] : 'None',
+                    accountDetails: doc.accountDetails || {}
+                };
+            });
+            
+            displayDocumentIntelligence(analysis);
+        }
+
+        function detectDocumentType(doc) {
+            const name = doc.name.toLowerCase();
+            if (name.includes('statement') || name.includes('account')) return 'Bank Statement';
+            if (name.includes('credit')) return 'Credit Card Statement';
+            if (name.includes('csv') || name.includes('export')) return 'Transaction Export';
+            return 'Financial Document';
+        }
+
+        function displayDocumentIntelligence(analysis) {
+            const html = analysis.map(doc => `
+                <div class="doc-analysis-card">
+                    <h4>${doc.name}</h4>
+                    <div class="analysis-metric">
+                        <span class="label">Type:</span>
+                        <span class="value">${doc.type}</span>
+                    </div>
+                    <div class="analysis-metric">
+                        <span class="label">Transactions:</span>
+                        <span class="value">${doc.transactions}</span>
+                    </div>
+                    ${doc.dateRange ? `
+                        <div class="analysis-metric">
+                            <span class="label">Date Range:</span>
+                            <span class="value">${doc.dateRange.start.toLocaleDateString()} - ${doc.dateRange.end.toLocaleDateString()}</span>
+                        </div>
+                    ` : ''}
+                    <div class="analysis-metric">
+                        <span class="label">Total Spent:</span>
+                        <span class="value">$${doc.totalSpent.toFixed(2)}</span>
+                    </div>
+                    <div class="analysis-metric">
+                        <span class="label">Total Income:</span>
+                        <span class="value">$${doc.totalIncome.toFixed(2)}</span>
+                    </div>
+                    <div class="analysis-metric">
+                        <span class="label">Avg Transaction:</span>
+                        <span class="value">$${doc.avgTransaction.toFixed(2)}</span>
+                    </div>
+                    <div class="analysis-metric">
+                        <span class="label">Top Category:</span>
+                        <span class="value">${doc.topCategory}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('documentAnalysis').innerHTML = html;
+            document.getElementById('documentIntelligence').style.display = 'block';
+        }
+
+        // Enhanced reporting
+        function generateEnhancedReport() {
+            const report = {
+                metadata: {
+                    generatedAt: new Date().toISOString(),
+                    totalDocuments: uploadedDocuments.length,
+                    totalTransactions: transactions.length,
+                    dateRange: transactions.length > 0 ? {
+                        start: transactions[transactions.length - 1].date.toISOString(),
+                        end: transactions[0].date.toISOString()
+                    } : null
+                },
+                summary: {
+                    totalIncome: transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
+                    totalExpenses: Math.abs(transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)),
+                    netSavings: transactions.reduce((sum, t) => sum + t.amount, 0),
+                    accountDetails: accountDetails
+                },
+                categories: categories,
+                monthlyBreakdown: monthlyData,
+                documentIntelligence: uploadedDocuments.map(doc => ({
+                    name: doc.name,
+                    type: detectDocumentType(doc),
+                    transactions: (doc.transactions || []).length,
+                    processed: doc.processed
+                })),
+                insights: generateInsights()
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `enhanced_financial_report_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Enhanced financial report generated with fraud detection, duplicate analysis, and advanced insights!');
+        }
+
+        function generateTaxReport() {
+            const taxCategories = {
+                'Business Expenses': ['Office', 'Software', 'Internet', 'Phone'],
+                'Medical': ['Healthcare', 'Pharmacy', 'Medical'],
+                'Charitable': ['Donation', 'Charity'],
+                'Investment': ['Investment', 'Broker', 'Trading'],
+                'Income': ['Salary', 'Freelance', 'Investment Income']
+            };
+            
+            const taxReport = {
+                year: new Date().getFullYear(),
+                summary: {},
+                transactions: {}
+            };
+            
+            Object.entries(taxCategories).forEach(([taxCategory, categories]) => {
+                const relevantTransactions = transactions.filter(t => 
+                    categories.some(cat => t.category.toLowerCase().includes(cat.toLowerCase()))
+                );
+                
+                taxReport.summary[taxCategory] = relevantTransactions.reduce((sum, t) => sum + Math.abs(t.amount), 0);
+                taxReport.transactions[taxCategory] = relevantTransactions;
+            });
+            
+            const blob = new Blob([JSON.stringify(taxReport, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tax_summary_${new Date().getFullYear()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Tax summary report generated! Review for potential deductions and income reporting.');
+        }
+
+        function clearSession() {
+            if (confirm('Are you sure you want to clear all data? This will remove all uploaded documents and analysis.')) {
+                transactions = [];
+                categories = {};
+                monthlyData = {};
+                budgets = {};
+                accountDetails = {};
+                uploadedDocuments = [];
+                currentDocumentIndex = 0;
+                filteredTransactions = [];
+                currentFilters = {
+                    dateRange: null,
+                    search: null,
+                    duplicates: false,
+                    transfers: false,
+                    anomalies: false
+                };
+                
+                // Hide all panels
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('documentManager').style.display = 'none';
+                document.getElementById('accountInfoCard').style.display = 'none';
+                document.getElementById('analysisToolbar').style.display = 'none';
+                document.getElementById('documentIntelligence').style.display = 'none';
+                document.getElementById('advancedInsights').style.display = 'none';
+                
+                // Show upload section
+                document.getElementById('uploadSection').style.display = 'block';
+                
+                alert('Session cleared! You can now upload new documents for analysis.');
+            }
+        }
+
+        // Override existing functions to show analysis tools
+        const originalCombineDocumentData = combineDocumentData;
+        combineDocumentData = function() {
+            originalCombineDocumentData();
+            
+            // Show analysis tools when data is loaded
+            if (transactions.length > 0) {
+                document.getElementById('analysisToolbar').style.display = 'block';
+                generateDocumentIntelligence();
+                
+                // Initialize pagination
+                displayedTransactions = transactions;
+                currentPage = 1;
+                updateTransactionsDisplayWithPagination();
+            }
+        };
     </script>
 </body>
 </html>
