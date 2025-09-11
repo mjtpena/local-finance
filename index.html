@@ -1230,19 +1230,19 @@
 
         // Enhanced category detection patterns
         const categoryPatterns = {
-            'Groceries': ['grocery', 'supermarket', 'walmart', 'target', 'kroger', 'safeway', 'whole foods', 'trader joe', 'woolworth', 'coles', 'aldi', 'iga'],
-            'Dining': ['restaurant', 'cafe', 'coffee', 'starbucks', 'mcdonalds', 'chipotle', 'pizza', 'bar', 'pub', 'sushi', 'nandos', 'hungry jack', 'oporto', 'gong cha', 'doordash', 'uber *eat', 'menulog'],
-            'Transportation': ['uber', 'lyft', 'gas', 'shell', 'chevron', 'parking', 'toll', 'transit', 'metro', 'ampol', 'mobil', 'petrol', 'fuel'],
-            'Shopping': ['amazon', 'ebay', 'store', 'mall', 'clothing', 'shoes', 'fashion', 'kmart', 'target', 'bunnings', 'costco'],
-            'Entertainment': ['netflix', 'spotify', 'movie', 'theater', 'concert', 'game', 'sport', 'audible', 'apple.com/bill', 'google youtube'],
+            'Groceries': ['grocery', 'supermarket', 'walmart', 'target', 'kroger', 'safeway', 'whole foods', 'trader joe', 'woolworth', 'coles', 'aldi', 'iga', '7-eleven'],
+            'Dining': ['restaurant', 'cafe', 'coffee', 'starbucks', 'mcdonalds', 'chipotle', 'pizza', 'bar', 'pub', 'sushi', 'nandos', 'hungry jack', 'oporto', 'gong cha', 'doordash', 'uber *eat', 'menulog', 'enzos', 'cucina', 'dd *doordash', 'desilicio'],
+            'Transportation': ['uber', 'lyft', 'gas', 'shell', 'chevron', 'parking', 'toll', 'transit', 'metro', 'ampol', 'mobil', 'petrol', 'fuel', 'uber *trip'],
+            'Shopping': ['amazon', 'ebay', 'store', 'mall', 'clothing', 'shoes', 'fashion', 'kmart', 'target', 'bunnings', 'costco', 'amazon au'],
+            'Entertainment': ['netflix', 'spotify', 'movie', 'theater', 'concert', 'game', 'sport', 'audible', 'apple.com/bill', 'google youtube', 'audible limited'],
             'Utilities': ['electric', 'gas', 'water', 'internet', 'phone', 'verizon', 'att', 'comcast', 'telstra', 'optus', 'vodafone'],
-            'Healthcare': ['pharmacy', 'doctor', 'hospital', 'dental', 'medical', 'cvs', 'walgreens', 'bupa', 'medicare', 'health'],
+            'Healthcare': ['pharmacy', 'doctor', 'hospital', 'dental', 'medical', 'cvs', 'walgreens', 'bupa', 'medicare', 'health', 'resmed'],
             'Housing': ['rent', 'mortgage', 'property', 'lease', 'apartment', 'real estate'],
             'Insurance': ['insurance', 'geico', 'allstate', 'progressive', 'suncorp', 'aami', 'nrma'],
-            'Travel': ['hotel', 'booking.com', 'airbnb', 'flight', 'airline', 'expedia', 'holiday'],
+            'Travel': ['hotel', 'booking.com', 'airbnb', 'flight', 'airline', 'expedia', 'holiday', 'bkg*booking.com', 'overseas trans chg'],
             'Subscriptions': ['subscription', 'membership', 'resmed', 'patreon', 'onlyfans'],
-            'Income': ['salary', 'payroll', 'deposit', 'transfer', 'income', 'payment received', 'wages'],
-            'PayPal': ['paypal', 'pypl'],
+            'Income': ['salary', 'payroll', 'deposit', 'transfer', 'income', 'payment received', 'wages', 'refund'],
+            'PayPal': ['paypal', 'pypl', 'paypal *pypl'],
             'Savings': ['savings', 'investment', '401k', 'ira', 'transfer to savings']
         };
 
@@ -1374,11 +1374,31 @@
                 const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
                 let fullText = '';
                 
-                // Extract text from all pages
+                // Extract text from all pages with better line separation
                 for (let i = 1; i <= pdf.numPages; i++) {
                     const page = await pdf.getPage(i);
                     const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    
+                    // Group text items by vertical position to preserve lines
+                    const lineGroups = {};
+                    textContent.items.forEach(item => {
+                        const y = Math.round(item.transform[5]); // Y coordinate
+                        if (!lineGroups[y]) lineGroups[y] = [];
+                        lineGroups[y].push(item);
+                    });
+                    
+                    // Sort lines by Y position (top to bottom)
+                    const sortedLines = Object.keys(lineGroups)
+                        .sort((a, b) => b - a) // Higher Y values first (top to bottom)
+                        .map(y => lineGroups[y]);
+                    
+                    // Reconstruct text with proper line breaks
+                    const pageText = sortedLines.map(lineItems => {
+                        // Sort items in each line by X position (left to right)
+                        lineItems.sort((a, b) => a.transform[4] - b.transform[4]);
+                        return lineItems.map(item => item.str).join(' ');
+                    }).join('\n');
+                    
                     fullText += pageText + '\n';
                 }
                 
@@ -1423,31 +1443,111 @@
             
             // Parse transactions - looking for date patterns and amounts
             const lines = text.split('\n');
+            
+            // Enhanced patterns for different statement formats
+            // HSBC Credit Card: "DD/MM/YY NNNN MERCHANT_NAME $AMOUNT"
+            const hsbcPattern = /(\d{2}\/\d{2}\/\d{2})\s+(\d{4})\s+(.+?)\s+(-?\$[\d,]+\.\d{2})$/;
+            
+            // HSBC Alternative: "DD/MM/YY DESCRIPTION $AMOUNT" (no card number)
+            const hsbcAltPattern = /(\d{2}\/\d{2}\/\d{2})\s+([^0-9].+?)\s+(-?\$[\d,]+\.\d{2})$/;
+            
+            // Generic patterns for other banks
             const transactionPattern = /(\d{1,2}\/\d{2}\/\d{2,4})\s+(\d{4})?\s*(.*?)\s+(-?\$?[\d,]+\.?\d*)/;
             const altPattern = /(\d{1,2}\/\d{2}\/\d{2})\s+(.*?)\s+\$?([\d,]+\.\d{2})/;
             
             lines.forEach((line, index) => {
                 if (line.length < 10) return;
                 
-                let match = line.match(transactionPattern);
-                if (!match) {
-                    match = line.match(altPattern);
+                // First, check if this line contains multiple transactions by looking for multiple date patterns
+                const multipleTransactionSplits = splitMultipleTransactions(line);
+                
+                if (multipleTransactionSplits.length > 1) {
+                    // Process each split transaction separately
+                    multipleTransactionSplits.forEach(transactionLine => {
+                        processTransactionLine(transactionLine, docTransactions);
+                    });
+                } else {
+                    // Process single transaction line normally
+                    processTransactionLine(line, docTransactions);
+                }
+            });
+            
+            // Helper function to split lines with multiple transactions
+            function splitMultipleTransactions(line) {
+                // Look for multiple date patterns in the same line
+                const datePattern = /\d{2}\/\d{2}\/\d{2}/g;
+                const matches = [...line.matchAll(datePattern)];
+                
+                if (matches.length <= 1) {
+                    return [line]; // Single or no transaction
                 }
                 
+                // Split the line at each date occurrence (except the first)
+                const splits = [];
+                let lastIndex = 0;
+                
+                matches.forEach((match, i) => {
+                    if (i > 0) {
+                        // Add the previous transaction (from lastIndex to current match)
+                        splits.push(line.substring(lastIndex, match.index).trim());
+                        lastIndex = match.index;
+                    }
+                });
+                
+                // Add the last transaction
+                splits.push(line.substring(lastIndex).trim());
+                
+                return splits.filter(split => split.length > 10); // Filter out empty or very short splits
+            }
+            
+            // Helper function to process a single transaction line
+            function processTransactionLine(line, docTransactions) {
+                let match = null;
+                let description = '';
+                let amountStr = '';
+                let dateStr = '';
+                
+                // Try HSBC patterns first
+                match = line.match(hsbcPattern);
                 if (match) {
-                    const dateStr = match[1];
-                    let description = '';
-                    let amountStr = '';
-                    
-                    if (match.length === 5) {
-                        description = match[3].trim();
-                        amountStr = match[4];
-                    } else {
+                    dateStr = match[1];
+                    description = match[3].trim(); // Skip card number, use merchant name
+                    amountStr = match[4];
+                } else {
+                    // Try HSBC alternative pattern (no card number)
+                    match = line.match(hsbcAltPattern);
+                    if (match) {
+                        dateStr = match[1];
                         description = match[2].trim();
                         amountStr = match[3];
+                    } else {
+                        // Try generic patterns
+                        match = line.match(transactionPattern);
+                        if (!match) {
+                            match = line.match(altPattern);
+                        }
+                        
+                        if (match) {
+                            dateStr = match[1];
+                            if (match.length === 5) {
+                                description = match[3].trim();
+                                amountStr = match[4];
+                            } else {
+                                description = match[2].trim();
+                                amountStr = match[3];
+                            }
+                        }
                     }
+                }
+                
+                if (match && dateStr && description && amountStr) {
+                    // Clean up amount string - handle negative amounts properly
+                    let amount = parseFloat(amountStr.replace(/[$,]/g, ''));
                     
-                    const amount = parseFloat(amountStr.replace(/[$,]/g, ''));
+                    // Handle negative amounts (refunds/credits) - they often start with -
+                    if (amountStr.includes('-')) {
+                        amount = -Math.abs(amount);
+                    }
                     
                     if (!isNaN(amount) && description.length > 0) {
                         const dateParts = dateStr.split('/');
@@ -1462,12 +1562,25 @@
                         const isRefund = description.toLowerCase().includes('refund') || 
                                        description.toLowerCase().includes('credit') ||
                                        amountStr.includes('-');
-                        const type = (category === 'Income' || isRefund) ? 'income' : 'expense';
+                        
+                        // For credit card statements: 
+                        // - Regular purchases are expenses (positive amounts in statement, negative in our system)
+                        // - Refunds/credits are income (negative amounts in statement, positive in our system)
+                        let finalAmount;
+                        let type;
+                        
+                        if (isRefund) {
+                            finalAmount = Math.abs(amount); // Refunds are positive income
+                            type = 'income';
+                        } else {
+                            finalAmount = -Math.abs(amount); // Expenses are negative
+                            type = 'expense';
+                        }
                         
                         const transaction = {
                             date,
-                            description: description.substring(0, 50),
-                            amount: isRefund ? Math.abs(amount) : -Math.abs(amount),
+                            description: description.substring(0, 80), // Increased length for HSBC merchant names
+                            amount: finalAmount,
                             balance: 0,
                             category,
                             type,
@@ -1478,6 +1591,8 @@
                         docTransactions.push(transaction);
                     }
                 }
+            }
+            
             });
             
             // Sort transactions by date
