@@ -1265,36 +1265,51 @@
             'Other': '#9ca3af'
         };
 
-        // File upload handling
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
+        // Initialize upload functionality when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeUploadFunctionality);
+        } else {
+            // DOM is already loaded
+            initializeUploadFunctionality();
+        }
 
-        uploadArea.addEventListener('click', () => fileInput.click());
+        function initializeUploadFunctionality() {
+            // File upload handling
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
 
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const files = Array.from(e.dataTransfer.files);
-            if (files.length > 0) {
-                processMultipleFiles(files);
+            if (!uploadArea || !fileInput) {
+                console.error('Upload elements not found');
+                return;
             }
-        });
 
-        fileInput.addEventListener('change', (e) => {
-            const files = Array.from(e.target.files);
-            if (files.length > 0) {
-                processMultipleFiles(files);
-            }
-        });
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = Array.from(e.dataTransfer.files);
+                if (files.length > 0) {
+                    processMultipleFiles(files);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                if (files.length > 0) {
+                    processMultipleFiles(files);
+                }
+            });
+        }
 
         async function processMultipleFiles(files) {
             document.getElementById('loading').classList.add('active');
@@ -1592,9 +1607,7 @@
                     }
                 }
             }
-            
-            });
-            
+
             // Sort transactions by date
             docTransactions.sort((a, b) => b.date - a.date);
             
