@@ -925,6 +925,215 @@
                 grid-column: 1 / -1;
             }
         }
+
+        /* Chat Interface Styles */
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            max-width: calc(100vw - 40px);
+            background: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chat-container.minimized {
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+        }
+
+        .chat-header {
+            background: var(--vscode-panel-background);
+            padding: 15px;
+            border-bottom: 1px solid var(--vscode-border-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h4 {
+            margin: 0;
+            color: var(--vscode-editor-foreground);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .chat-toggle {
+            background: none;
+            border: none;
+            color: var(--vscode-editor-foreground);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--vscode-editor-background);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            max-width: 85%;
+        }
+
+        .chat-message.user {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .chat-message-content {
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .chat-message.user .chat-message-content {
+            background: var(--vscode-text-link-foreground);
+            color: white;
+        }
+
+        .chat-message.assistant .chat-message-content {
+            background: var(--vscode-input-background);
+            color: var(--vscode-editor-foreground);
+            border: 1px solid var(--vscode-border-color);
+        }
+
+        .chat-input-container {
+            padding: 15px;
+            border-top: 1px solid var(--vscode-border-color);
+            background: var(--vscode-panel-background);
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--vscode-border-color);
+            border-radius: 20px;
+            background: var(--vscode-input-background);
+            color: var(--vscode-editor-foreground);
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            border-color: var(--vscode-text-link-foreground);
+        }
+
+        .chat-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 0 15px;
+        }
+
+        .chat-suggestion {
+            background: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-suggestion:hover {
+            background: var(--vscode-button-hover-background);
+        }
+
+        .chat-fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--vscode-text-link-foreground);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .chat-fab:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-fab.hidden {
+            display: none;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .chat-container {
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                left: 0;
+                width: 100%;
+                max-width: none;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+                border-bottom: none;
+            }
+
+            .chat-container.minimized {
+                display: none;
+            }
+
+            .chat-messages {
+                height: 250px;
+            }
+
+            .chat-fab {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            /* iOS Safari specific adjustments */
+            .chat-input {
+                font-size: 16px; /* Prevents zoom on iOS */
+                -webkit-appearance: none;
+                -webkit-border-radius: 20px;
+            }
+        }
+
+        /* iOS Safari safe area handling */
+        @supports (padding: max(0px)) {
+            .chat-container {
+                padding-bottom: max(0px, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Prevent zoom on input focus in iOS */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            .chat-input {
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1212,6 +1421,40 @@
                     <button class="export-btn" onclick="clearSession()">Clear Session</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Chat Interface -->
+    <button class="chat-fab" id="chatFab" onclick="toggleChat()">💬</button>
+
+    <div class="chat-container" id="chatContainer" style="display: none;">
+        <div class="chat-header" onclick="toggleChat()">
+            <h4>💭 Ask about your finances</h4>
+            <button class="chat-toggle" id="chatToggle">✕</button>
+        </div>
+
+        <div class="chat-suggestions" id="chatSuggestions">
+            <button class="chat-suggestion" onclick="askQuestion('How much did I spend this month?')">This month's spending</button>
+            <button class="chat-suggestion" onclick="askQuestion('What are my top 3 expense categories?')">Top categories</button>
+            <button class="chat-suggestion" onclick="askQuestion('Show me transactions over $100')">Large transactions</button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message assistant">
+                <div class="chat-message-content">
+                    Hi! I can help you understand your financial data. Try asking questions like "How much did I spend on groceries?" or "What's my biggest expense category?"
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <textarea
+                class="chat-input"
+                id="chatInput"
+                placeholder="Ask about your finances..."
+                rows="1"
+                onkeydown="handleChatKeydown(event)"
+            ></textarea>
         </div>
     </div>
 
@@ -3520,6 +3763,293 @@
                 updateTransactionsDisplayWithPagination();
             }
         };
+
+        // Chat Interface Functions
+        let chatVisible = false;
+
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            const chatFab = document.getElementById('chatFab');
+
+            chatVisible = !chatVisible;
+
+            if (chatVisible) {
+                chatContainer.style.display = 'block';
+                chatFab.classList.add('hidden');
+                document.getElementById('chatInput').focus();
+            } else {
+                chatContainer.style.display = 'none';
+                chatFab.classList.remove('hidden');
+            }
+        }
+
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function askQuestion(question) {
+            document.getElementById('chatInput').value = question;
+            sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message
+            addChatMessage(message, 'user');
+            input.value = '';
+
+            // Auto-resize input
+            input.style.height = 'auto';
+
+            // Process the query and respond
+            setTimeout(() => {
+                const response = processQuery(message);
+                addChatMessage(response, 'assistant');
+            }, 300);
+        }
+
+        function addChatMessage(message, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'chat-message-content';
+            contentDiv.innerHTML = message;
+
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function processQuery(query) {
+            if (transactions.length === 0) {
+                return "I don't have any financial data to analyze yet. Please upload your bank statements first!";
+            }
+
+            const lowerQuery = query.toLowerCase();
+
+            // Spending queries
+            if (lowerQuery.includes('spend') || lowerQuery.includes('spent')) {
+                return handleSpendingQuery(lowerQuery);
+            }
+
+            // Income queries
+            if (lowerQuery.includes('income') || lowerQuery.includes('earned') || lowerQuery.includes('received')) {
+                return handleIncomeQuery(lowerQuery);
+            }
+
+            // Category queries
+            if (lowerQuery.includes('category') || lowerQuery.includes('categories')) {
+                return handleCategoryQuery(lowerQuery);
+            }
+
+            // Transaction queries
+            if (lowerQuery.includes('transaction') || lowerQuery.includes('over') || lowerQuery.includes('above')) {
+                return handleTransactionQuery(lowerQuery);
+            }
+
+            // Balance queries
+            if (lowerQuery.includes('balance') || lowerQuery.includes('account')) {
+                return handleBalanceQuery(lowerQuery);
+            }
+
+            // Time-based queries
+            if (lowerQuery.includes('month') || lowerQuery.includes('week') || lowerQuery.includes('year')) {
+                return handleTimeQuery(lowerQuery);
+            }
+
+            // Default response with suggestions
+            return `I can help you with questions about:
+            <br><br>
+            💰 <strong>Spending:</strong> "How much did I spend this month?"
+            <br>📊 <strong>Categories:</strong> "What's my top expense category?"
+            <br>💳 <strong>Transactions:</strong> "Show me transactions over $100"
+            <br>📅 <strong>Time periods:</strong> "What did I spend last month?"
+            <br>💵 <strong>Income:</strong> "How much income did I receive?"
+            <br><br>
+            Try asking something specific about your financial data!`;
+        }
+
+        function handleSpendingQuery(query) {
+            const expenses = transactions.filter(t => t.amount < 0);
+
+            if (query.includes('month')) {
+                const currentMonth = new Date().toISOString().substring(0, 7);
+                const monthlyExpenses = expenses.filter(t => t.month === currentMonth);
+                const total = Math.abs(monthlyExpenses.reduce((sum, t) => sum + t.amount, 0));
+
+                return `This month you've spent <strong>$${total.toFixed(2)}</strong> across ${monthlyExpenses.length} transactions.`;
+            }
+
+            if (query.includes('total') || (!query.includes('month') && !query.includes('week'))) {
+                const total = Math.abs(expenses.reduce((sum, t) => sum + t.amount, 0));
+                return `Your total spending across all transactions is <strong>$${total.toFixed(2)}</strong>.`;
+            }
+
+            return "I can help you check spending by month, week, or total. Try being more specific!";
+        }
+
+        function handleIncomeQuery(query) {
+            const income = transactions.filter(t => t.amount > 0);
+
+            if (income.length === 0) {
+                return "I don't see any income transactions in your data.";
+            }
+
+            const total = income.reduce((sum, t) => sum + t.amount, 0);
+            return `Your total income is <strong>$${total.toFixed(2)}</strong> from ${income.length} transactions.`;
+        }
+
+        function handleCategoryQuery(query) {
+            if (Object.keys(categories).length === 0) {
+                return "No categories found in your transaction data.";
+            }
+
+            const sortedCategories = Object.entries(categories)
+                .map(([cat, data]) => ({ category: cat, total: Math.abs(data.total) }))
+                .sort((a, b) => b.total - a.total);
+
+            if (query.includes('top')) {
+                const topCount = query.includes('3') ? 3 : query.includes('5') ? 5 : 3;
+                const topCategories = sortedCategories.slice(0, topCount);
+
+                let response = `Your top ${topCount} expense categories:<br><br>`;
+                topCategories.forEach((cat, i) => {
+                    response += `${i + 1}. <strong>${cat.category}:</strong> $${cat.total.toFixed(2)}<br>`;
+                });
+
+                return response;
+            }
+
+            return `You have spending across ${sortedCategories.length} categories. Your biggest category is <strong>${sortedCategories[0].category}</strong> with $${sortedCategories[0].total.toFixed(2)}.`;
+        }
+
+        function handleTransactionQuery(query) {
+            let threshold = 100; // default
+
+            const match = query.match(/(\d+)/);
+            if (match) {
+                threshold = parseInt(match[1]);
+            }
+
+            const largeTransactions = transactions.filter(t => Math.abs(t.amount) > threshold);
+
+            if (largeTransactions.length === 0) {
+                return `No transactions found over $${threshold}.`;
+            }
+
+            const sorted = largeTransactions
+                .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
+                .slice(0, 5);
+
+            let response = `Found ${largeTransactions.length} transactions over $${threshold}. Here are the largest:<br><br>`;
+
+            sorted.forEach(t => {
+                const amount = Math.abs(t.amount);
+                const type = t.amount < 0 ? '🔴' : '🟢';
+                response += `${type} <strong>$${amount.toFixed(2)}</strong> - ${t.description}<br>`;
+            });
+
+            return response;
+        }
+
+        function handleBalanceQuery(query) {
+            if (!accountDetails.closingBalance && !accountDetails.openingBalance) {
+                return "No account balance information found in your statements.";
+            }
+
+            let response = "Account Information:<br><br>";
+
+            if (accountDetails.accountNumber) {
+                response += `<strong>Account:</strong> ${accountDetails.accountNumber}<br>`;
+            }
+
+            if (accountDetails.closingBalance) {
+                response += `<strong>Closing Balance:</strong> $${accountDetails.closingBalance.toFixed(2)}<br>`;
+            }
+
+            if (accountDetails.openingBalance) {
+                response += `<strong>Opening Balance:</strong> $${accountDetails.openingBalance.toFixed(2)}<br>`;
+            }
+
+            return response;
+        }
+
+        function handleTimeQuery(query) {
+            const currentMonth = new Date().toISOString().substring(0, 7);
+            const currentDate = new Date();
+            const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+                .toISOString().substring(0, 7);
+
+            if (query.includes('last month')) {
+                const monthTransactions = transactions.filter(t => t.month === lastMonth);
+                const expenses = monthTransactions.filter(t => t.amount < 0);
+                const total = Math.abs(expenses.reduce((sum, t) => sum + t.amount, 0));
+
+                return `Last month you spent <strong>$${total.toFixed(2)}</strong> across ${expenses.length} transactions.`;
+            }
+
+            if (query.includes('this month')) {
+                const monthTransactions = transactions.filter(t => t.month === currentMonth);
+                const expenses = monthTransactions.filter(t => t.amount < 0);
+                const total = Math.abs(expenses.reduce((sum, t) => sum + t.amount, 0));
+
+                return `This month you've spent <strong>$${total.toFixed(2)}</strong> so far.`;
+            }
+
+            return "I can help with 'this month' or 'last month' queries. Try being more specific!";
+        }
+
+        // Auto-resize textarea
+        document.getElementById('chatInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Initialize chat when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeChat);
+        } else {
+            initializeChat();
+        }
+
+        function initializeChat() {
+            // Add some mobile-specific touches
+            const chatInput = document.getElementById('chatInput');
+
+            if (chatInput) {
+                // Prevent zoom on iOS Safari
+                chatInput.addEventListener('touchstart', function() {
+                    chatInput.style.fontSize = '16px';
+                });
+
+                // Handle viewport changes on mobile
+                if (window.visualViewport) {
+                    window.visualViewport.addEventListener('resize', () => {
+                        const chatContainer = document.getElementById('chatContainer');
+                        if (chatVisible && window.innerWidth <= 768) {
+                            // Adjust chat height when keyboard appears
+                            const keyboardHeight = window.innerHeight - window.visualViewport.height;
+                            if (keyboardHeight > 0) {
+                                chatContainer.style.paddingBottom = keyboardHeight + 'px';
+                            } else {
+                                chatContainer.style.paddingBottom = '';
+                            }
+                        }
+                    });
+                }
+            }
+        }
     </script>
 </body>
 </html>
